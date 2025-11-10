@@ -7,6 +7,9 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches: [ main ]
 
+
+
+
 jobs:
   build_and_deploy:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
@@ -15,10 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 20
+       - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '20.11.1'
 
       - name: Build and Deploy
         uses: Azure/static-web-apps-deploy@v1
@@ -34,4 +37,5 @@ jobs:
 
 
           
+
 
