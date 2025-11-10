@@ -7,9 +7,6 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches: [ main ]
 
-
-
-
 jobs:
   build_and_deploy:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
@@ -18,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-       - name: Use Node.js 20
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20.11.1'
@@ -29,13 +26,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          # Next.js on Static Web Apps: leave output_location EMPTY
           app_location: "/"
           api_location: ""
           output_location: ""
           app_build_command: "npm run build"
-
-
-          
-
-
