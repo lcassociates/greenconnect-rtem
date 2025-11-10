@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/*
+@tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* CRITICAL FIX: Ensure the root elements are full size and have no margin */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* Adding these for good measure, often helps with full-page flex layouts */
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevents accidental horizontal scrolling */
+}
+
+/* Any other global styles you have can go below here */
