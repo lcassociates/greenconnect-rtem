@@ -29,4 +29,11 @@ jobs:
           app_location: "/"
           api_location: ""
           output_location: ""
-          app_build_command: "npm run build"
+          app_build_command: |
+            echo "---- forcing Node 20.11.1 ----"
+            nvm install 20.11.1
+            nvm use 20.11.1
+            node -v
+            npm -v
+            npm install
+            npm run build
