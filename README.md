@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GreenConnect RTEM Dashboard
 
-## Getting Started
+This is a Next.js 16 + Tailwind CSS v4 powered frontend dashboard for displaying a portfolio of buildings with energy compliance metrics. It uses a sidebar layout and responsive cards, rendering images from the `/public/images` folder.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✅ Stack
+
+- **Next.js 16** (with Turbopack)
+- **Tailwind CSS v4** (`@tailwindcss/postcss` + `postcss.config.js`)
+- **TypeScript**
+- **PostCSS**
+
+---
+
+## 🚀 Setup Instructions
+
+### 1. Install Dependencies
+
+```
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Make sure you have the following installed in `package.json`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```json
+"devDependencies": {
+  "tailwindcss": "^4.0.0",
+  "@tailwindcss/postcss": "^1.0.0",
+  "postcss": "^8.4.0",
+  "autoprefixer": "^10.4.0"
+}
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+### 2. Tailwind Setup
 
-To learn more about Next.js, take a look at the following resources:
+#### ✅ postcss.config.js
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```js
+module.exports = {
+  plugins: {
+    'tailwindcss': {},
+    'autoprefixer': {},
+  }
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### ✅ globals.css
 
-## Deploy on Vercel
+```css
+@import "tailwindcss";
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+body {
+  font-family: system-ui, sans-serif;
+}
+```
+
+#### ✅ tailwind.config.js
+
+```js
+module.exports = {
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}"
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+---
+
+## 🖼️ Images
+
+All building images are placed in the `public/images/` folder. You can reference them in JSX like so:
+
+```tsx
+<img src="/images/building1.png" alt="Building 1" className="..." />
+```
+
+Make sure all image file names match `mockData.ts` values.
+
+---
+
+## 🧱 Folder Structure
+
+```
+app/
+├── components/
+│   └── Card.tsx          ← Portfolio card component
+├── data/
+│   └── mockData.ts       ← Contains mock portfolio info
+├── layout.tsx            ← Root layout with global CSS import
+├── page.tsx              ← Main dashboard page
+├── globals.css           ← Tailwind + custom styles
+
+public/
+└── images/
+    ├── building1.png
+    ├── building2.png
+    └── ...
+
+postcss.config.js         ← Required for Tailwind v4
+tailwind.config.js        ← Tailwind config
+```
+
+---
+
+## 🔧 Run the App
+
+```
+npm run dev
+```
+
+This starts the Next.js development server on `http://localhost:3000`.
+
+---
+
+## ✅ Final UI Example
+
+- Responsive card layout
+- Sidebar navigation
+- Rounded image cards
+- Tailwind styling (v4-compliant)
+- Image rendering from `/public/images/`
+- Scrollable dashboard grid
+
+---
+
+## 🧠 Tips
+
+- Use `object-cover` and `h-40` to constrain image height inside cards.
+- Tailwind v4 **does not** support legacy `@tailwind` directives unless properly configured in `postcss.config.js`.
+- Always use `@import "tailwindcss";` inside `globals.css`.
+
+---
+
+## © 2025 LC Associates - GreenConnect RTEM
