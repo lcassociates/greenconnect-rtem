@@ -48,7 +48,7 @@ export default function Card({ title, subtitle, image, metrics }: any) {
             </p>
             <p className="flex items-center gap-2">
               <span className="text-green-500">✅</span> 
-              Compliance: <span className="font-semibold">{metrics.complianceYear}</span>
+              LL87 Compliance Year: <span className="font-semibold">{metrics.complianceYear}</span>
             </p>
           </div>
         )}
