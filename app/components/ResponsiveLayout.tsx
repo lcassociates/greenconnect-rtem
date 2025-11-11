@@ -4,14 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-/**
- * ResponsiveLayout.tsx
- * --------------------
- * - Desktop: Permanent left sidebar
- * - Mobile: Top bar with "GreenConnect" + menu icon
- * - Dropdown menu appears on click, closes after navigation
- */
-
 const MENU = [
   { label: "Portfolio", href: "/", icon: "📊" },
   { label: "Analytics", href: "/analytics", icon: "📈" },
@@ -71,8 +63,17 @@ function MobileTopBar() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
+  // Prevent page scroll when mobile menu is open
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [open]);
+
+
   return (
-    <header className="md:hidden sticky top-0 z-40 bg-slate-900/90 backdrop-blur border-b border-slate-800">
+    <header className="md:hidden sticky top-0 z-40 bg-slate-900/90 border-b border-slate-800">
       <div className="flex items-center justify-between px-4 h-14">
         <Link href="/" className="text-lg font-semibold tracking-tight">
           GreenConnect
@@ -86,7 +87,6 @@ function MobileTopBar() {
           onClick={() => setOpen((s) => !s)}
           className="p-2 rounded-xl hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
         >
-          {/* Close icon */}
           <div className="w-5 h-4 relative" aria-hidden>
             <span
               className={`absolute left-0 top-0 block h-0.5 w-5 bg-slate-200 transition-transform ${
@@ -108,32 +108,41 @@ function MobileTopBar() {
       </div>
 
       {open && (
-        <div
-          id="mobile-menu"
-          ref={menuRef}
-          className="px-2 pb-3 shadow-lg border-t border-slate-800"
-        >
-          <nav className="flex flex-col gap-1 py-2">
-            {MENU.map((m) => {
-              const active = pathname === m.href;
-              return (
-                <Link
-                  key={m.href}
-                  href={m.href}
-                  className={`flex items-center gap-2 rounded-xl px-3 py-2 hover:bg-slate-800 active:bg-slate-700 ${
-                    active ? "bg-slate-800 text-white" : "text-slate-200"
-                  }`}
-                >
-                  <span className="text-lg" aria-hidden>
-                    {m.icon}
-                  </span>
-                  <span>{m.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-      )}
+    <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
+      {/* Backdrop (tap to close) */}
+      <div
+        className="absolute inset-0 bg-black/40"
+        onClick={() => setOpen(false)}
+      />
+
+      <div
+        id="mobile-menu"
+        ref={menuRef}
+        className="absolute left-0 right-0 top-14 mx-2 border border-slate-800 bg-slate-900 shadow-xl"
+      >
+        <nav className="flex flex-col gap-1 py-2">
+          {MENU.map((m) => {
+            const active = pathname === m.href;
+            return (
+              <Link
+                key={m.href}
+                href={m.href}
+                className={`flex items-center gap-2 rounded-xl px-3 py-2 hover:bg-slate-800 active:bg-slate-700 ${
+                  active ? "bg-slate-800 text-white" : "text-slate-200"
+                }`}
+              >
+                <span className="text-lg" aria-hidden>
+                  {m.icon}
+                </span>
+                <span>{m.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+    </div>
+  )}
+
     </header>
   );
 }
