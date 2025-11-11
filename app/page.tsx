@@ -9,6 +9,7 @@ export default function Home() {
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
   const selectedPortfolio = mockPortfolios.find(p => p.id === selectedPortfolioId);
 
+
   return (
     <>
       {/* Header */}

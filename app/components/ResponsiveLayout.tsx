@@ -13,7 +13,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
  */
 
 const MENU = [
-  { label: "Portfolio", href: "/portfolio", icon: "📊" },
+  { label: "Portfolio", href: "/", icon: "📊" },
   { label: "Analytics", href: "/analytics", icon: "📈" },
   { label: "Controls", href: "/controls", icon: "⚙️" },
   { label: "AI Insights", href: "/ai-insights", icon: "🧠" },
@@ -29,7 +29,7 @@ export default function ResponsiveLayout({
       <MobileTopBar />
       <div className="mx-auto max-w-[1600px] grid grid-cols-1 md:grid-cols-[260px_1fr]">
         <DesktopSidebar />
-        <main className="min-h-[calc(100vh-56px)] md:min-h-screen bg-slate-950/20">
+        <main className="min-h-screen bg-slate-100 text-slate-900">
           <div className="p-4 md:p-8">{children}</div>
         </main>
       </div>
