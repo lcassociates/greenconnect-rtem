@@ -21,20 +21,33 @@ interface PortfolioCardProps {
 
 export default function PortfolioCard({ name, buildings }: PortfolioCardProps) {
   return (
-    <div className="mb-10">
-      <h3 className="text-xl font-semibold mb-4 pl-2">{name}</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+    <div className="mb-8 sm:mb-10 px-2 sm:px-4">
+      <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4 text-gray-800">
+        {name}
+      </h3>
+
+      <div
+        className="
+          grid 
+          grid-cols-1 
+          sm:grid-cols-2 
+          lg:grid-cols-3 
+          xl:grid-cols-4 
+          gap-4 
+          sm:gap-6
+        "
+      >
         {buildings.map((bldg) => (
-            <Card
+          <Card
             key={bldg.title}
             title={bldg.title}
             subtitle={bldg.subtitle}
-            image={bldg.image}           // ✅ REQUIRED TO PREVENT THE ERROR
-            metrics={bldg.metrics}       // ✅ Include if used in <Card />
-            />
-
+            image={bldg.image}
+            metrics={bldg.metrics}
+          />
         ))}
       </div>
     </div>
   );
 }
+

@@ -1,67 +1,87 @@
 "use client";
 
-
-// Goal: Show only PortfolioCards initially. When one is clicked, show its BuildingCards.
-
 import { useState } from "react";
 import { mockPortfolios } from "./data/mockData";
 import Card from "./components/Card";
-import PortfolioCard from "./components/portfolioCard";
 import PortfolioPreviewCard from "./components/PortfolioPreviewCard";
 
 export default function Home() {
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
-
   const selectedPortfolio = mockPortfolios.find(p => p.id === selectedPortfolioId);
 
   return (
-  <>
-    <header className="bg-white h-16 shadow flex items-center justify-between px-8">
-      <h2 className="text-lg font-semibold">
-        {selectedPortfolio ? selectedPortfolio.name : "Portfolio Overview"}
-      </h2>
-      {selectedPortfolio && (
-        <button
-          className="text-sm text-green-600 hover:underline"
-          onClick={() => setSelectedPortfolioId(null)}
-        >
-          ← Back to Portfolios
-        </button>
-      )}
-    </header>
+    <>
+      {/* Header */}
+      <header className="bg-white h-14 sm:h-16 shadow flex items-center justify-between px-4 sm:px-8 sticky top-0 z-10">
+        <h2 className="text-base sm:text-lg font-semibold truncate">
+          {selectedPortfolio ? selectedPortfolio.name : "Portfolio Overview"}
+        </h2>
+        {selectedPortfolio && (
+          <button
+            className="text-xs sm:text-sm text-green-600 hover:underline"
+            onClick={() => setSelectedPortfolioId(null)}
+          >
+            ← Back
+          </button>
+        )}
+      </header>
 
-    <div className="flex-1 overflow-y-auto p-6 space-y-10">
-      {!selectedPortfolio && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {mockPortfolios.map((portfolio) => (
-            <div
-              key={portfolio.id}
-              onClick={() => setSelectedPortfolioId(portfolio.id)}
-              className="cursor-pointer"
-            >
-              <PortfolioPreviewCard
-                name={portfolio.name}
-                image={portfolio.image}
+      {/* Body */}
+      <main className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-8 sm:space-y-10">
+        {/* ---- Portfolio preview grid ---- */}
+        {!selectedPortfolio && (
+          <div
+            className="
+              grid 
+              grid-cols-1 
+              sm:grid-cols-2 
+              md:grid-cols-3 
+              lg:grid-cols-4 
+              gap-4 
+              sm:gap-6
+            "
+          >
+            {mockPortfolios.map((portfolio) => (
+              <div
+                key={portfolio.id}
+                onClick={() => setSelectedPortfolioId(portfolio.id)}
+                className="cursor-pointer"
+              >
+                <PortfolioPreviewCard
+                  name={portfolio.name}
+                  image={portfolio.image}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ---- Building cards for selected portfolio ---- */}
+        {selectedPortfolio && (
+          <div
+            className="
+              grid 
+              grid-cols-1 
+              sm:grid-cols-2 
+              md:grid-cols-3 
+              lg:grid-cols-4 
+              xl:grid-cols-5 
+              gap-4 
+              sm:gap-6
+            "
+          >
+            {selectedPortfolio.buildings.map((bldg) => (
+              <Card
+                key={bldg.title}
+                title={bldg.title}
+                subtitle={bldg.subtitle}
+                image={bldg.image}
+                metrics={bldg.metrics}
               />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {selectedPortfolio && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {selectedPortfolio.buildings.map((bldg) => (
-            <Card
-              key={bldg.title}
-              title={bldg.title}
-              subtitle={bldg.subtitle}
-              image={bldg.image}
-              metrics={bldg.metrics}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  </>
-);
+            ))}
+          </div>
+        )}
+      </main>
+    </>
+  );
 }
