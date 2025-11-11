@@ -5,6 +5,9 @@ import ResponsiveLayout from "./components/ResponsiveLayout";
 export const metadata: Metadata = {
   title: "GreenConnect RTEM",
   description: "GreenConnect dashboard",
+   icons: {
+    icon: '../images/GC-logo-square.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
