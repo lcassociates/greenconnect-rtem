@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start -p $PORT -H 0.0.0.0",
     "lint": "eslint",
-    "export": "next export"
   },
   "dependencies": {
     "framer-motion": "^12.23.24",
