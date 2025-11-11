@@ -3,13 +3,11 @@ name: Azure Static Web Apps CI/CD
 on:
   push:
     branches:
-      - main
-      - develop
+      - main          # ✅ Deploy only from main
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
-      - develop
 
 jobs:
   build_and_deploy:
@@ -20,17 +18,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false   # ✅ prevents extraheader cleanup error
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.11.1'
+          node-version: '20'           # your current Node 20.x version
 
       - name: Install dependencies
         run: npm ci
 
-      # Next.js 16 no longer uses "next export"
-      # The static export is handled via next.config.js → output: 'export'
+      # ✅ Build your Next.js App Router app (no next export)
       - name: Build Next.js app
         run: npm run build
 
@@ -40,5 +40,6 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          app_location: "/"
-          output_location: "out"
+          app_location: "/"           # path where your package.json and app/ live
+          output_location: ""         # ✅ leave blank for Next.js SSR/ISR builds (no 'out' folder)
+          skip_app_build: true        # ✅ since we already built above
