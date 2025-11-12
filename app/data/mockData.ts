@@ -120,26 +120,185 @@ export const mockPortfolios = [
     id: "nyc002",
     name: "Columbia REIT",
     image: "/images/building4.png",
-    buildings: [
+    "buildings": [
       {
-        title: "315 Park Avenue South",
-        subtitle: "Back Bay",
-        image: "/images/building4.png",
-        metrics: {
-          energyStar: 91,
-          ll97Score: 5,
-          compliance: 2026
+        "title": "101 Franklin St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/101 Franklin St.png",
+        "metrics": {
+          "energyStar": 100,
+          "ll97Score": null,
+          "compliance": 2017
         }
       },
       {
-        title: "200 Clarendon Street",
-        subtitle: "Financial District",
-        image: "/images/building5.png",
-        metrics: {
-          energyStar: 80,
-          ll97Score: 6,
-          compliance: 2025
-          
+        "title": "125 W 25th AFIAA",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/125 W 25th St.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2021
+        }
+      },
+      {
+        "title": "149 Madison Ave",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/149 Madison Ave.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2021
+        }
+      },
+      {
+        "title": "236 W 18th St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/236 W 18th St.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2017
+        }
+      },
+      {
+        "title": "220 12th Ave",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/220 12th Ave.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2023
+        }
+      },
+      {
+        "title": "229 W 43rd St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/229 W 43rd St.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": 5.1,
+          "compliance": 2025
+        }
+      },
+      {
+        "title": "236 W 17th St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/236 W 17th St.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2016
+        }
+      },
+      {
+        "title": "245 W 17th St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/245 W 17th St.png",
+        "metrics": {
+          "energyStar": 82,
+          "ll97Score": 4.3,
+          "compliance": 2027
+        }
+      },
+      {
+        "title": "249 W 17th St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/249 W 17th St.png",
+        "metrics": {
+          "energyStar": 78,
+          "ll97Score": 4.1,
+          "compliance": 2027
+        }
+      },
+      {
+        "title": "25-11 49th Ave",
+        "subtitle": "Long Island City",
+        "image": "/images/BuildingImg/ColumbiaREIT/25-11 49th Ave.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2020
+        }
+      },
+      {
+        "title": "Terminal Warehouse (261 11th Ave)",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/261 11th Ave.png",
+        "metrics": {
+          "energyStar": 100,
+          "ll97Score": 0.8,
+          "compliance": 2013
+        }
+      },
+      {
+        "title": "271 11th Ave",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/271 11th Ave.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2013
+        }
+      },
+      {
+        "title": "315 Park Ave S",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/315 Park Ave S.png",
+        "metrics": {
+          "energyStar": 88,
+          "ll97Score": 4.3,
+          "compliance": 2029
+        }
+      },
+      {
+        "title": "43-10 23rd St",
+        "subtitle": "Long Island City",
+        "image": "/images/BuildingImg/ColumbiaREIT/43-10 23rd St.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2020
+        }
+      },
+      {
+        "title": "605 W 27th St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/605 W 27th St.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2023
+        }
+      },
+      {
+        "title": "606 W 28th St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/606 W 28th St.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2023
+        }
+      },
+      {
+        "title": "635 W 27th St",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/635 W 27th St.png",
+        "metrics": {
+          "energyStar": null,
+          "ll97Score": null,
+          "compliance": 2023
+        }
+      },
+      {
+        "title": "799 Broadway",
+        "subtitle": "Manhattan",
+        "image": "/images/BuildingImg/ColumbiaREIT/799 Broadway.png",
+        "metrics": {
+          "energyStar": 73,
+          "ll97Score": 3.7,
+          "compliance": 2022
         }
       }
     ]
