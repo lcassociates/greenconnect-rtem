@@ -134,7 +134,7 @@ export const mockPortfolios = [
       {
         "title": "125 W 25th AFIAA",
         "subtitle": "Manhattan",
-        "image": "/images/BuildingImg/ColumbiaREIT/125 W 25th St.png",
+        "image": "/images/BuildingImg/ColumbiaREIT/125 W 25th AFIAA.png",
         "metrics": {
           "energyStar": null,
           "ll97Score": null,
