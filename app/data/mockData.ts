@@ -232,16 +232,6 @@ export const mockPortfolios = [
         }
       },
       {
-        "title": "271 11th Ave",
-        "subtitle": "Manhattan",
-        "image": "/images/BuildingImg/ColumbiaREIT/271 11th Ave.png",
-        "metrics": {
-          "energyStar": null,
-          "ll97Score": null,
-          "compliance": 2013
-        }
-      },
-      {
         "title": "315 Park Ave S",
         "subtitle": "Manhattan",
         "image": "/images/BuildingImg/ColumbiaREIT/315 Park Ave S.png",
@@ -259,36 +249,6 @@ export const mockPortfolios = [
           "energyStar": null,
           "ll97Score": null,
           "compliance": 2020
-        }
-      },
-      {
-        "title": "605 W 27th St",
-        "subtitle": "Manhattan",
-        "image": "/images/BuildingImg/ColumbiaREIT/605 W 27th St.png",
-        "metrics": {
-          "energyStar": null,
-          "ll97Score": null,
-          "compliance": 2023
-        }
-      },
-      {
-        "title": "606 W 28th St",
-        "subtitle": "Manhattan",
-        "image": "/images/BuildingImg/ColumbiaREIT/606 W 28th St.png",
-        "metrics": {
-          "energyStar": null,
-          "ll97Score": null,
-          "compliance": 2023
-        }
-      },
-      {
-        "title": "635 W 27th St",
-        "subtitle": "Manhattan",
-        "image": "/images/BuildingImg/ColumbiaREIT/635 W 27th St.png",
-        "metrics": {
-          "energyStar": null,
-          "ll97Score": null,
-          "compliance": 2023
         }
       },
       {
