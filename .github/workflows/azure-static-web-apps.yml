@@ -23,4 +23,3 @@ jobs:
           app_location: "out"
           api_location: ""
           output_location: ""
-          config_file_location:"/"
