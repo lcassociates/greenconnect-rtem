@@ -6,12 +6,10 @@ export default function ControlsPage() {
         margin: 0,
         fontFamily:
           'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        background: "#020617",
         color: "#e2e8f0",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "100vh",
       }}
     >
       <div
@@ -42,11 +40,9 @@ export default function ControlsPage() {
         </h1>
 
         <p style={{ fontSize: "14px", color: "#94a3b8", marginBottom: "4px" }}>
-          We couldn’t find the page you requested.
-        </p>
-
-        <p style={{ fontSize: "14px", color: "#94a3b8", margin: 0 }}>
-          Please check the URL or return to your GreenConnect dashboard.
+         This part of the GreenConnect App isn't ready yet.</p>
+         <p style={{ fontSize: "14px", color: "#94a3b8", marginBottom: "4px" }}>
+          Please use the navigation on the left to choose another section
         </p>
       </div>
     </div>
