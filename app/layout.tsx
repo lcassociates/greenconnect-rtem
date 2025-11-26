@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import ResponsiveLayout from "./components/ResponsiveLayout";
+import ResponsiveLayout from "./components/layout/ResponsiveLayout";
 
 export const metadata: Metadata = {
   title: "GreenConnect RTEM",

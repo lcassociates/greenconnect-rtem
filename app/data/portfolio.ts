@@ -17,3 +17,20 @@ export interface Portfolio {
   image: string;
   buildings: Building[];
 }
+
+
+export interface activeProjectsData{
+
+}
+
+export interface dobComplianceData{
+
+}
+
+export interface energyProcurementData{
+
+}
+
+export interface equipmentSchedulesData{
+  
+}

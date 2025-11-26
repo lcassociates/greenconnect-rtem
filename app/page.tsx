@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { mockPortfolios } from "./data/mockData";
 import Card from "./components/Card";
-import PortfolioPreviewCard from "./components/PortfolioPreviewCard";
+import PortfolioPreviewCard from "./components/PortfolioPage";
 
 export default function Home() {
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
