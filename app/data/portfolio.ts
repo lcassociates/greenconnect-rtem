@@ -1,3 +1,4 @@
+
 export interface Building {
   id: string;
   title: string;
@@ -18,19 +19,41 @@ export interface Portfolio {
   buildings: Building[];
 }
 
+// --- DOB Compliance ---
 
-export interface activeProjectsData{
-
+export interface DOBComplianceItem {
+  type: string;
+  dueDate: string;        
+  status: string;        
+  filingNumber: string;   
 }
 
-export interface dobComplianceData{
+export type DOBComplianceData = Record<string, DOBComplianceItem[]>;
 
+// --- Energy Procurement ---
+
+export interface EnergyProcurementContract {
+  provider: string;      
+  contractType: string;  
+  startDate: string;     
+  endDate: string;        
+  rate: string;          
+  annualUsage: string;    
 }
 
-export interface energyProcurementData{
+export type EnergyProcurementData = Record<string, EnergyProcurementContract>;
 
+// --- Equipment Schedules ---
+
+export interface EquipmentScheduleItem {
+  equipmentType: string;     
+  floor: string;              
+  areaDescription: string;   
+  make: string;             
+  model: string;
+  serialNo: string;
+  installYr: number;          
+  lifespan: number;           
 }
 
-export interface equipmentSchedulesData{
-  
-}
+export type EquipmentSchedulesData = Record<string, EquipmentScheduleItem[]>;

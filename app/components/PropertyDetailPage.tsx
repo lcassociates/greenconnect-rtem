@@ -21,6 +21,13 @@ import {
   TableRow,
 } from "./ui/table";
 
+import { subMeteringData } from "../data/subMeteringData";
+import { buildingData } from "../data/buildingData";
+import { activeProjectsData } from "../data/activeProjectsData";
+import { dobComplianceData } from "../data/dobComplianceData";
+import { energyProcurementData } from "../data/energyProcurementData";
+import { equipmentSchedulesData } from "../data/equipmentSchedulesData";
+
 interface PropertyDetailPageProps {
   buildingName: string;
   clientId: string;
@@ -38,61 +45,6 @@ type ViewType =
   | "dob-compliance"
   | "energy-procurement"
   | "equipment-schedules";
-
-// Mock data for different sections
-const subMeteringData = {
-  "100 Broadway": {
-    status: "Completed",
-    totalMeters: 32,
-    metersInstalled: 32,
-    tenants: 18,
-    installDate: "2023-08-15",
-    lastReading: "2024-11-15",
-    deadline: "2025-01-01",
-  },
-  "1180 Ave of Americas": {
-    status: "In Progress",
-    totalMeters: 45,
-    metersInstalled: 38,
-    tenants: 24,
-    installDate: "2024-03-01",
-    lastReading: "2024-11-20",
-    deadline: "2025-06-01",
-  },
-};
-
-// Building data for property card display
-const buildingData: Record<
-  string,
-  {
-    title: string;
-    subtitle: string;
-    image: string;
-    energyStar: number;
-    ll97Score: number;
-    compliance: number;
-  }
-> = {
-  "100 Broadway": {
-    title: "100 Broadway",
-    subtitle: "SoHo",
-    image:
-      "https://images.unsplash.com/photo-1694702740570-0a31ee1525c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjMwNTQ1NTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    energyStar: 87,
-    ll97Score: 3.64,
-    compliance: 2026,
-  },
-  "1180 Ave of Americas": {
-    title: "1180 Ave of Americas",
-    subtitle: "Manhattan",
-    image:
-      "https://images.unsplash.com/photo-1762867089896-e51054249a41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tZXJjaWFsJTIwYnVpbGRpbmclMjBleHRlcmlvcnxlbnwxfHx8fDE3NjMxMjEwNjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    energyStar: 75,
-    ll97Score: 4.86,
-    compliance: 2022,
-  },
-};
-
 
 export function PropertyDetailPage({
   buildingName,
@@ -484,6 +436,7 @@ export function PropertyDetailPage({
           </Card>
         </div>
       </div>
+
     </div>
   );
 }
