@@ -1,8 +1,15 @@
 // app/data/ll88Submetering.ts
 
+export type LL88SubmeteringStatus =
+  | "Completed"
+  | "In Progress"
+  | "Not Started"
+  | "Due"
+  | "Exempt";
+
 export interface LL88SubmeteringRow {
   building: string;
-  status: string;
+  status: LL88SubmeteringStatus;
   installationYear: number;
   meterCount: number;
   tenants: number;

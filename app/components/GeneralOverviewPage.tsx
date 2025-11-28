@@ -119,45 +119,45 @@ export function GeneralOverviewPage({
     if (buildingSection === "sub-metering") {
       return (
         <SubmeteringPage
-          // buildingName={selectedBuilding}
-          // clientId={clientId}
-          // onBack={handleBackToBuildingDetail}
+          buildingName={selectedBuilding}
+          clientId={clientId}
+          onBack={handleBackToBuildingDetail}
         />
       );
     }
     if (buildingSection === "active-projects") {
       return (
         <ActiveProjectsPage
-          // buildingName={selectedBuilding}
-          // clientId={clientId}
-          // onBack={handleBackToBuildingDetail}
+          buildingName={selectedBuilding}
+          clientId={clientId}
+          onBack={handleBackToBuildingDetail}
         />
       );
     }
     if (buildingSection === "dob-compliance") {
       return (
         <DOBCompliancePage
-          // buildingName={selectedBuilding}
-          // clientId={clientId}
-          // onBack={handleBackToBuildingDetail}
+          buildingName={selectedBuilding}
+          clientId={clientId}
+          onBack={handleBackToBuildingDetail}
         />
       );
     }
     if (buildingSection === "energy-procurement") {
       return (
         <EnergyProcurementPage
-          // buildingName={selectedBuilding}
-          // clientId={clientId}
-          // onBack={handleBackToBuildingDetail}
+          buildingName={selectedBuilding}
+          clientId={clientId}
+          onBack={handleBackToBuildingDetail}
         />
       );
     }
     if (buildingSection === "equipment-schedules") {
       return (
         <EquipmentSchedulePage
-          // buildingName={selectedBuilding}
-          // clientId={clientId}
-          // onBack={handleBackToBuildingDetail}
+          buildingName={selectedBuilding}
+          clientId={clientId}
+          onBack={handleBackToBuildingDetail}
         />
       );
     }

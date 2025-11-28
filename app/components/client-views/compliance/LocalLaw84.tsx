@@ -39,9 +39,7 @@ import { ll84Data, type LL84Row } from "../../../data/ll84";
 type SortableLL84Key = keyof LL84Row; // "building" | "status" | "compliance"
 
 export interface LocalLaw84Props {
-  buildingName: string;
   clientId: string;
-  onBack?: () => void;
 }
 
 export function LocalLaw84({ clientId }: LocalLaw84Props) {
@@ -49,9 +47,12 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
     ll84Data.map((b) => b.building),
   );
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortColumn, setSortColumn] = useState<SortableLL84Key | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
+  const [sortColumn, setSortColumn] = useState<SortableLL84Key | null>(
+    null,
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">(
+    "asc",
+  );
 
   // Status filtering
   const allStatuses = [
@@ -69,9 +70,8 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
   );
 
   // Filter buildings based on search term
-  const filteredUniqueBuildings = uniqueBuildings.filter(
-    (building) =>
-      building.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredUniqueBuildings = uniqueBuildings.filter((building) =>
+    building.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const toggleBuilding = (building: string) => {
@@ -112,6 +112,12 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
     setSearchTerm("");
     setSelectedStatuses(allStatuses);
   };
+
+  const filteredData = ll84Data.filter(
+    (b) =>
+      selectedBuildings.includes(b.building) &&
+      selectedStatuses.includes(b.status),
+  );
 
   // Calculate stats from the full dataset (not filtered)
   const totalBuildings = ll84Data.length;
@@ -234,7 +240,6 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
     return 0;
   });
 
-
   return (
     <div className="p-8">
       <h2 className="mb-6 text-gray-900">
@@ -248,12 +253,11 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
             <FileText className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm text-gray-600 leading-relaxed">
-                Large NYC buildings (&gt; 25,000 ft²) are
-                required to report their annual energy and water
-                use through the ENERGY STAR Portfolio Manager
-                system. Building owners must gather their
-                utility data each year and submit it to the City
-                by the required deadline.{" "}
+                Large NYC buildings (&gt; 25,000 ft²) are required to
+                report their annual energy and water use through the
+                ENERGY STAR Portfolio Manager system. Building owners
+                must gather their utility data each year and submit it
+                to the City by the required deadline.{" "}
                 <a
                   href="https://www.nyc.gov/site/buildings/codes/benchmarking.page"
                   target="_blank"
@@ -311,6 +315,7 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
           );
         })}
       </div>
+
       {/* Building Details Table */}
       <div className="mt-8">
         <Card className="p-6">
@@ -326,8 +331,7 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                     className="flex items-center gap-2"
                   >
                     <Filter className="w-4 h-4" />
-                    Filter Buildings ({selectedBuildings.length}
-                    )
+                    Filter Buildings ({selectedBuildings.length})
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -363,21 +367,19 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                   {/* Filtered Building List */}
                   <div className="max-h-64 overflow-y-auto">
                     {filteredUniqueBuildings.length > 0 ? (
-                      filteredUniqueBuildings.map(
-                        (building) => (
-                          <DropdownMenuCheckboxItem
-                            key={building}
-                            checked={selectedBuildings.includes(
-                              building,
-                            )}
-                            onCheckedChange={() =>
-                              toggleBuilding(building)
-                            }
-                          >
-                            {building}
-                          </DropdownMenuCheckboxItem>
-                        ),
-                      )
+                      filteredUniqueBuildings.map((building) => (
+                        <DropdownMenuCheckboxItem
+                          key={building}
+                          checked={selectedBuildings.includes(
+                            building,
+                          )}
+                          onCheckedChange={() =>
+                            toggleBuilding(building)
+                          }
+                        >
+                          {building}
+                        </DropdownMenuCheckboxItem>
+                      ))
                     ) : (
                       <div className="p-2 text-sm text-gray-500 text-center">
                         No buildings found
@@ -435,9 +437,7 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                           toggleStatus(status)
                         }
                       >
-                        <Badge
-                          className={getStatusColor(status)}
-                        >
+                        <Badge className={getStatusColor(status)}>
                           {status}
                         </Badge>
                       </DropdownMenuCheckboxItem>
@@ -458,6 +458,7 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
               </DropdownMenu>
             </div>
           </div>
+
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -521,9 +522,7 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                     <TableCell>{building.building}</TableCell>
                     <TableCell>
                       <Badge
-                        className={getStatusColor(
-                          building.status,
-                        )}
+                        className={getStatusColor(building.status)}
                       >
                         {building.status}
                       </Badge>
