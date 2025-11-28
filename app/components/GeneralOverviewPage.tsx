@@ -10,13 +10,14 @@ import { LocalLaw88Submetering } from "./client-views/compliance/LocalLaw88Subme
 import { LocalLaw97 } from "./client-views/compliance/LocalLaw97";
 import { ActiveProjects } from "./client-views/ActiveProjects";
 import { PropertyList } from "./client-views/PropertyList";
+import { SubmeteringPage } from "./property-views/SubmeteringPage"
+import { ActiveProjectsPage } from "./property-views/ActiveProjectPage"
 import { ProcurementContract } from "./client-views/ProcurementContract";
 import { PropertyDetailPage } from "./PropertyDetailPage";
-import { SubmeteringPage } from "./property-views/SubmeteringPage";
-import { ActiveProjectsPage } from "./property-views/ActiveProjectPage";
 import { DOBCompliancePage } from "./property-views/DOBCompliancePage";
 import { EnergyProcurementPage } from "./property-views/EnergyProcurementPage";
 import { EquipmentSchedulePage } from "./property-views/EquipmentSchedulePage";
+import { clientNames } from "../data/clientNames";
 
 interface GeneralOverviewPageProps {
   clientId: string;
@@ -41,25 +42,25 @@ type BuildingSectionType =
   | "energy-procurement"
   | "equipment-schedules";
 
-const clientNames: Record<string, string> = {
-  "cannon-hill": "Cannon Hill Capital Partners",
-  "columbia-reit": "Columbia REIT",
-};
-
 export function GeneralOverviewPage({
   clientId,
   onBack,
 }: GeneralOverviewPageProps) {
   const [activeView, setActiveView] = useState<ViewType>("active-projects");
-  const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
+  const [selectedBuilding, setSelectedBuilding] = useState<string | null>(
+    null,
+  );
   const [buildingSection, setBuildingSection] =
     useState<BuildingSectionType>(null);
   const [isOverviewExpanded, setIsOverviewExpanded] = useState(true);
-  const [isLLComplianceExpanded, setIsLLComplianceExpanded] = useState(false);
-  const [currentSection, setCurrentSection] =
-    useState<"main" | "general-overview" | "property-list">("general-overview");
-  const [currentSubSection, setCurrentSubSection] =
-    useState<"none" | "local-law-compliance">("none");
+  const [isLLComplianceExpanded, setIsLLComplianceExpanded] =
+    useState(false);
+  const [currentSection, setCurrentSection] = useState<
+    "main" | "general-overview" | "property-list"
+  >("general-overview");
+  const [currentSubSection, setCurrentSubSection] = useState<
+    "none" | "local-law-compliance"
+  >("none");
 
   const clientName = clientNames[clientId] || "Client";
 
@@ -113,63 +114,68 @@ export function GeneralOverviewPage({
     return "Back to General Overview";
   };
 
+  // If a building is selected, delegate to building-level pages
   if (selectedBuilding) {
-    // Render building section pages
     if (buildingSection === "sub-metering") {
       return (
         <SubmeteringPage
-          buildingName={selectedBuilding}
-          clientId={clientId}
-          onBack={handleBackToBuildingDetail}
+          // buildingName={selectedBuilding}
+          // clientId={clientId}
+          // onBack={handleBackToBuildingDetail}
         />
       );
     }
     if (buildingSection === "active-projects") {
       return (
         <ActiveProjectsPage
-          buildingName={selectedBuilding}
-          clientId={clientId}
-          onBack={handleBackToBuildingDetail}
+          // buildingName={selectedBuilding}
+          // clientId={clientId}
+          // onBack={handleBackToBuildingDetail}
         />
       );
     }
     if (buildingSection === "dob-compliance") {
       return (
         <DOBCompliancePage
-          buildingName={selectedBuilding}
-          clientId={clientId}
-          onBack={handleBackToBuildingDetail}
+          // buildingName={selectedBuilding}
+          // clientId={clientId}
+          // onBack={handleBackToBuildingDetail}
         />
       );
     }
     if (buildingSection === "energy-procurement") {
       return (
         <EnergyProcurementPage
-          buildingName={selectedBuilding}
-          clientId={clientId}
-          onBack={handleBackToBuildingDetail}
+          // buildingName={selectedBuilding}
+          // clientId={clientId}
+          // onBack={handleBackToBuildingDetail}
         />
       );
     }
     if (buildingSection === "equipment-schedules") {
       return (
         <EquipmentSchedulePage
-          buildingName={selectedBuilding}
-          clientId={clientId}
-          onBack={handleBackToBuildingDetail}
+          // buildingName={selectedBuilding}
+          // clientId={clientId}
+          // onBack={handleBackToBuildingDetail}
         />
       );
     }
 
-    // Render building detail page with card navigation
     return (
       <PropertyDetailPage
         buildingName={selectedBuilding}
         clientId={clientId}
         onBack={handleBackToClient}
-        onNavigateToSubMetering={() => setBuildingSection("sub-metering")}
-        onNavigateToActiveProjects={() => setBuildingSection("active-projects")}
-        onNavigateToDOBCompliance={() => setBuildingSection("dob-compliance")}
+        onNavigateToSubMetering={() =>
+          setBuildingSection("sub-metering")
+        }
+        onNavigateToActiveProjects={() =>
+          setBuildingSection("active-projects")
+        }
+        onNavigateToDOBCompliance={() =>
+          setBuildingSection("dob-compliance")
+        }
         onNavigateToEnergyProcurement={() =>
           setBuildingSection("energy-procurement")
         }
@@ -194,7 +200,9 @@ export function GeneralOverviewPage({
               <ArrowLeft className="w-4 h-4" />
               {getBackButtonText()}
             </Button>
-            <h1 className="text-gray-900 tracking-tight">{clientName}</h1>
+            <h1 className="text-gray-900 tracking-tight">
+              {clientName}
+            </h1>
             {currentSection === "general-overview" && (
               <span
                 className="text-blue-600 cursor-pointer hover:underline transition-colors"
@@ -230,6 +238,7 @@ export function GeneralOverviewPage({
             )}
           </div>
         </div>
+
         <div className="flex flex-col gap-2">
           {/* Main navigation buttons */}
           <div className="flex gap-2 items-center">
@@ -266,11 +275,12 @@ export function GeneralOverviewPage({
             isOverviewExpanded &&
             currentSubSection === "none" && (
               <div className="flex flex-col gap-2 ml-8">
-                {/* Local Law Compliance expandable button */}
                 <div className="flex gap-2 items-center">
                   <Button
                     variant={
-                      activeView === "active-projects" ? "default" : "outline"
+                      activeView === "active-projects"
+                        ? "default"
+                        : "outline"
                     }
                     size="sm"
                     onClick={() => {
@@ -315,7 +325,9 @@ export function GeneralOverviewPage({
             <div className="flex gap-2 ml-8">
               <Button
                 variant={
-                  activeView === "local-law-84" ? "default" : "outline"
+                  activeView === "local-law-84"
+                    ? "default"
+                    : "outline"
                 }
                 size="sm"
                 onClick={() => setActiveView("local-law-84")}
@@ -329,7 +341,9 @@ export function GeneralOverviewPage({
                     : "outline"
                 }
                 size="sm"
-                onClick={() => setActiveView("local-law-88-lighting")}
+                onClick={() =>
+                  setActiveView("local-law-88-lighting")
+                }
               >
                 Local Law 88-Lighting
               </Button>
@@ -340,12 +354,18 @@ export function GeneralOverviewPage({
                     : "outline"
                 }
                 size="sm"
-                onClick={() => setActiveView("local-law-88-submetering")}
+                onClick={() =>
+                  setActiveView("local-law-88-submetering")
+                }
               >
                 Local Law 88 - Submetering
               </Button>
               <Button
-                variant={activeView === "local-law-97" ? "default" : "outline"}
+                variant={
+                  activeView === "local-law-97"
+                    ? "default"
+                    : "outline"
+                }
                 size="sm"
                 onClick={() => setActiveView("local-law-97")}
               >
@@ -355,21 +375,28 @@ export function GeneralOverviewPage({
           )}
         </div>
       </div>
+
       <div className="flex-1 overflow-auto">
-        {currentSection === "main" && activeView === "overview" && (
-          <PropertyOverviewPage clientId={clientId} />
+        {currentSection === "main" &&
+          activeView === "overview" && (
+            <PropertyOverviewPage clientId={clientId} />
+          )}
+        {currentSection === "general-overview" &&
+          activeView === "overview" && (
+            <PropertyOverviewPage clientId={clientId} />
+          )}
+        {activeView === "local-law-84" && (
+          <LocalLaw84 clientId={clientId} />
         )}
-        {currentSection === "general-overview" && activeView === "overview" && (
-          <PropertyOverviewPage clientId={clientId} />
-        )}
-        {activeView === "local-law-84" && <LocalLaw84 clientId={clientId} />}
         {activeView === "local-law-88-lighting" && (
           <LocalLaw88Lighting clientId={clientId} />
         )}
         {activeView === "local-law-88-submetering" && (
           <LocalLaw88Submetering clientId={clientId} />
         )}
-        {activeView === "local-law-97" && <LocalLaw97 clientId={clientId} />}
+        {activeView === "local-law-97" && (
+          <LocalLaw97 clientId={clientId} />
+        )}
         {activeView === "active-projects" && (
           <ActiveProjects clientId={clientId} />
         )}

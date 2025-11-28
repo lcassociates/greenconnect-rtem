@@ -1,32 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  ArrowLeft,
-  Activity,
-  Briefcase,
-  FileText,
-  Zap,
-  Wrench,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./ui/table";
-
-import { subMeteringData } from "../data/subMeteringData";
-import { buildingData } from "../data/buildingData";
-import { activeProjectsData } from "../data/activeProjectsData";
-import { dobComplianceData } from "../data/dobComplianceData";
-import { energyProcurementData } from "../data/energyProcurementData";
-import { equipmentSchedulesData } from "../data/equipmentSchedulesData";
+  subMeteringData,
+  buildingData,
+  activeProjectsData,
+  dobComplianceData,
+  energyProcurementData,
+  equipmentSchedulesData,
+} from "../data/propertyDetailData";
 
 interface PropertyDetailPageProps {
   buildingName: string;
@@ -112,21 +98,21 @@ export function PropertyDetailPage({
 
     const totalDays = Math.max(
       1,
-      Math.ceil((end.getTime() - start.getTime()) / msInDay)
+      Math.ceil((end.getTime() - start.getTime()) / msInDay),
     );
     const elapsedDays = Math.min(
       totalDays,
       Math.max(
         0,
-        Math.ceil((today.getTime() - start.getTime()) / msInDay)
-      )
+        Math.ceil((today.getTime() - start.getTime()) / msInDay),
+      ),
     );
 
     percentElapsed = (elapsedDays / totalDays) * 100;
 
     daysLeft = Math.max(
       0,
-      Math.ceil((end.getTime() - today.getTime()) / msInDay)
+      Math.ceil((end.getTime() - today.getTime()) / msInDay),
     );
 
     formattedStartDate = start.toLocaleDateString(undefined, {
@@ -146,8 +132,8 @@ export function PropertyDetailPage({
     daysLeft <= 30
       ? "bg-red-600"
       : daysLeft <= 60
-      ? "bg-amber-500"
-      : "bg-slate-900";
+        ? "bg-amber-500"
+        : "bg-slate-900";
 
   return (
     <div className="h-full flex flex-col">
@@ -198,7 +184,7 @@ export function PropertyDetailPage({
                 <>
                   <Badge
                     className={`${getStatusColor(
-                      subMetering.status
+                      subMetering.status,
                     )} text-xs mb-2`}
                   >
                     {subMetering.status}
@@ -210,7 +196,9 @@ export function PropertyDetailPage({
                 </>
               )}
               {!subMetering && (
-                <p className="text-xs text-gray-600">No meter data</p>
+                <p className="text-xs text-gray-600">
+                  No meter data
+                </p>
               )}
             </div>
           </Card>
@@ -244,7 +232,7 @@ export function PropertyDetailPage({
                 <>
                   <Badge
                     className={`${getStatusColor(
-                      activeProjects.status
+                      activeProjects.status,
                     )} text-xs mb-2`}
                   >
                     {activeProjects.status}
@@ -256,15 +244,19 @@ export function PropertyDetailPage({
                   <p className="text-xs text-gray-600 mt-1">
                     Projected Annual Savings: $
                     {(() => {
-                      const total = activeProjects.projects.reduce(
-                        (sum, project) => {
-                          const amount = parseFloat(
-                            project.annualSavings.replace(/[$,]/g, "")
-                          );
-                          return sum + amount;
-                        },
-                        0
-                      );
+                      const total =
+                        activeProjects.projects.reduce(
+                          (sum, project) => {
+                            const amount = parseFloat(
+                              project.annualSavings.replace(
+                                /[$,]/g,
+                                "",
+                              ),
+                            );
+                            return sum + amount;
+                          },
+                          0,
+                        );
                       return total >= 1000
                         ? `${(total / 1000).toFixed(1)}k`
                         : total.toLocaleString();
@@ -310,14 +302,14 @@ export function PropertyDetailPage({
                   <Badge
                     className={`${
                       dobCompliance.filter(
-                        (item) => item.status === "Completed"
+                        (item) => item.status === "Completed",
                       ).length === dobCompliance.length
                         ? "bg-green-100 text-green-800"
                         : "bg-blue-100 text-blue-800"
                     } text-xs mb-2`}
                   >
                     {dobCompliance.filter(
-                      (item) => item.status === "Completed"
+                      (item) => item.status === "Completed",
                     ).length === dobCompliance.length
                       ? "All Complete"
                       : "In Progress"}
@@ -326,7 +318,7 @@ export function PropertyDetailPage({
                     Completion:{" "}
                     {
                       dobCompliance.filter(
-                        (item) => item.status === "Completed"
+                        (item) => item.status === "Completed",
                       ).length
                     }
                     /{dobCompliance.length}
@@ -373,15 +365,15 @@ export function PropertyDetailPage({
                       daysLeft <= 30
                         ? "bg-red-100 text-red-800"
                         : daysLeft <= 60
-                        ? "bg-orange-100 text-orange-800"
-                        : "bg-green-100 text-green-800"
+                          ? "bg-orange-100 text-orange-800"
+                          : "bg-green-100 text-green-800"
                     } text-xs mb-2`}
                   >
                     {daysLeft <= 30
                       ? "Expiring Soon"
                       : daysLeft <= 60
-                      ? "Renew Soon"
-                      : "Active"}
+                        ? "Renew Soon"
+                        : "Active"}
                   </Badge>
                   <p className="text-xs text-gray-600">
                     Supplier: {energyProcurement.provider}
@@ -392,7 +384,9 @@ export function PropertyDetailPage({
                 </>
               )}
               {!energyProcurement && (
-                <p className="text-xs text-gray-600">No contract</p>
+                <p className="text-xs text-gray-600">
+                  No contract
+                </p>
               )}
             </div>
           </Card>
@@ -425,7 +419,9 @@ export function PropertyDetailPage({
               {equipmentSchedules.length > 0 ? (
                 <p className="text-xs text-gray-600 mt-1">
                   {equipmentSchedules.length}{" "}
-                  {equipmentSchedules.length === 1 ? "item" : "items"}
+                  {equipmentSchedules.length === 1
+                    ? "item"
+                    : "items"}
                 </p>
               ) : (
                 <p className="text-xs text-gray-600 mt-1">

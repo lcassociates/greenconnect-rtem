@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { mockPortfolios } from "./data/mockData";
 import Card from "./components/Card";
-import PortfolioPreviewCard from "./components/PortfolioPage";
+import { PortfolioPage } from "./components/PortfolioPage";
 
 export default function Home() {
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
-  const selectedPortfolio = mockPortfolios.find(p => p.id === selectedPortfolioId);
-
+  const selectedPortfolio = mockPortfolios.find(
+    (p) => p.id === selectedPortfolioId
+  );
 
   return (
     <>
@@ -29,32 +30,11 @@ export default function Home() {
 
       {/* Body */}
       <main className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-8 sm:space-y-10">
-        {/* ---- Portfolio preview grid ---- */}
+        {/* ---- Portfolio overview (client cards from PortfolioPage) ---- */}
         {!selectedPortfolio && (
-          <div
-            className="
-              grid 
-              grid-cols-1 
-              sm:grid-cols-2 
-              md:grid-cols-3 
-              lg:grid-cols-4 
-              gap-4 
-              sm:gap-6
-            "
-          >
-            {mockPortfolios.map((portfolio) => (
-              <div
-                key={portfolio.id}
-                onClick={() => setSelectedPortfolioId(portfolio.id)}
-                className="cursor-pointer"
-              >
-                <PortfolioPreviewCard
-                  name={portfolio.name}
-                  image={portfolio.image}
-                />
-              </div>
-            ))}
-          </div>
+          <PortfolioPage
+            onClientSelect={(clientId) => setSelectedPortfolioId(clientId)}
+          />
         )}
 
         {/* ---- Building cards for selected portfolio ---- */}
