@@ -122,12 +122,12 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
     (b) => selectedBuildings.includes(b.building) && selectedStatuses.includes(b.status),
   );
 
-  const totalBuildings = filteredData.length;
-  const completed = filteredData.filter((b) => b.status === "Completed").length;
-  const inProgress = filteredData.filter((b) => b.status === "In Progress").length;
-  const notStarted = filteredData.filter((b) => b.status === "Not Started").length;
-  const behindSchedule = filteredData.filter((b) => b.status === "Due").length;
-  const exempt = filteredData.filter((b) => b.status === "Exempt").length;
+  const totalBuildings = LL88SubmeteringData.length;
+  const completed = LL88SubmeteringData.filter((b) => b.status === "Completed").length;
+  const inProgress = LL88SubmeteringData.filter((b) => b.status === "In Progress").length;
+  const notStarted = LL88SubmeteringData.filter((b) => b.status === "Not Started").length;
+  const behindSchedule = LL88SubmeteringData.filter((b) => b.status === "Due").length;
+  const exempt = LL88SubmeteringData.filter((b) => b.status === "Exempt").length;
 
   const stats = [
     {

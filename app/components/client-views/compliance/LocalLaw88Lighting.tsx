@@ -125,20 +125,20 @@ export function LocalLaw88Lighting({
       selectedStatuses.includes(b.status),
   );
 
-  const totalBuildings = filteredData.length;
-  const completedBuildings = filteredData.filter(
+  const totalBuildings = LL88LightingData.length;
+  const completedBuildings = LL88LightingData.filter(
     (b) => b.status === "Completed",
   ).length;
-  const inProgress = filteredData.filter(
+  const inProgress = LL88LightingData.filter(
     (b) => b.status === "In Progress",
   ).length;
-  const notStarted = filteredData.filter(
+  const notStarted = LL88LightingData.filter(
     (b) => b.status === "Not Started",
   ).length;
-  const exempt = filteredData.filter(
+  const exempt = LL88LightingData.filter(
     (b) => b.status === "Exempt",
   ).length;
-  const atRisk = filteredData.filter(
+  const atRisk = LL88LightingData.filter(
     (b) => b.status === "Due",
   ).length;
 
