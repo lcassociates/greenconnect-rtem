@@ -77,7 +77,7 @@ export const LL97Data: LL97Row[] = [
   },
 ];
 
-export const allProjectData: LL97ProjectRow[] = [
+export const LL97ProjectData: LL97ProjectRow[] = [
   {
     building: "100 Broadway",
     project: "HVAC Optimization",

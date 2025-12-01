@@ -40,36 +40,46 @@ import {
 } from "recharts";
 import {
   LL97Data,
+  LL97ProjectData,
   type LL97Row,
+  type LL97ProjectRow,
 } from "../../../data/ll97";
 
 interface LocalLaw97Props {
   clientId: string;
 }
 
-// type SortableLL97Key = keyof LL97Row;
+// columns we can sort on in the performance table
+type PerformanceSortKey = keyof Pick<
+  LL97Row,
+  "ghgScore" | "exceedEmissions" | "penalty2030"
+>;
 
+// columns we can sort on in the project table
+type ProjectSortKey = keyof Pick<
+  LL97ProjectRow,
+  "ghgReduction" | "kwhSavings" | "incentive"
+>;
+
+// status filter type
 type StatusFilter = "Good" | "Close" | "Over";
 
 export function LocalLaw97({ clientId }: LocalLaw97Props) {
-  const [selectedBuildings, setSelectedBuildings] = useState<
-    string[]
-  >(LL97Data.map((b) => b.building));
+  const [selectedBuildings, setSelectedBuildings] = useState<string[]>(
+    LL97Data.map((b) => b.building),
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [activeStatus, setActiveStatus] = useState<StatusFilter | null>(null);
 
   // Sorting state for Building Performance table
   const [performanceSortColumn, setPerformanceSortColumn] =
-    useState<string | null>(null);
-  const [
-    performanceSortDirection,
-    setPerformanceSortDirection,
-  ] = useState<"asc" | "desc">("desc");
+    useState<PerformanceSortKey | null>(null);
+  const [performanceSortDirection, setPerformanceSortDirection] =
+    useState<"asc" | "desc">("desc");
 
   // Sorting state for Project Impact table
-  const [projectSortColumn, setProjectSortColumn] = useState<
-    string | null
-  >(null);
+  const [projectSortColumn, setProjectSortColumn] =
+    useState<ProjectSortKey | null>(null);
   const [projectSortDirection, setProjectSortDirection] =
     useState<"asc" | "desc">("desc");
 
@@ -78,9 +88,8 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
   );
 
   // Filter buildings based on search term
-  const filteredUniqueBuildings = uniqueBuildings.filter(
-    (building) =>
-      building.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredUniqueBuildings = uniqueBuildings.filter((building) =>
+    building.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const toggleBuilding = (building: string) => {
@@ -108,24 +117,24 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
 
   // Handle status card click
   const handleCardClick = (status: StatusFilter | null) => {
-    setActiveStatus(activeStatus === status ? null : status);
+    setActiveStatus((prev) => (prev === status ? null : status));
   };
 
   // Helper function to get building status
   const getBuildingStatus = (ghgScore: number): StatusFilter => {
     const GHG_LIMIT = 4.53;
     const CLOSE_THRESHOLD = GHG_LIMIT * 0.91;
-    
+
     if (ghgScore > GHG_LIMIT) return "Over";
     if (ghgScore > CLOSE_THRESHOLD && ghgScore <= GHG_LIMIT) return "Close";
     return "Good";
   };
 
   // Sorting handler for Building Performance table
-  const handlePerformanceSort = (column: string) => {
+  const handlePerformanceSort = (column: PerformanceSortKey) => {
     if (performanceSortColumn === column) {
-      setPerformanceSortDirection(
-        performanceSortDirection === "asc" ? "desc" : "asc",
+      setPerformanceSortDirection((prev) =>
+        prev === "asc" ? "desc" : "asc",
       );
     } else {
       setPerformanceSortColumn(column);
@@ -134,10 +143,10 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
   };
 
   // Sorting handler for Project Impact table
-  const handleProjectSort = (column: string) => {
+  const handleProjectSort = (column: ProjectSortKey) => {
     if (projectSortColumn === column) {
-      setProjectSortDirection(
-        projectSortDirection === "asc" ? "desc" : "asc",
+      setProjectSortDirection((prev) =>
+        prev === "asc" ? "desc" : "asc",
       );
     } else {
       setProjectSortColumn(column);
@@ -152,67 +161,33 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
       return getBuildingStatus(b.ghgScore) === activeStatus;
     });
 
-  const filteredProjectData = LL97Data.filter((p) =>
+  const filteredProjectData = LL97ProjectData.filter((p) =>
     selectedBuildings.includes(p.building),
   );
 
   // Sort Building Performance data
-  const sortedBuildingScores = [...filteredBuildingScores].sort(
-    (a, b) => {
-      if (!performanceSortColumn) return 0;
+  const sortedBuildingScores = [...filteredBuildingScores].sort((a, b) => {
+    if (!performanceSortColumn) return 0;
 
-      let aValue: number = 0;
-      let bValue: number = 0;
+    const aValue = a[performanceSortColumn];
+    const bValue = b[performanceSortColumn];
 
-      switch (performanceSortColumn) {
-        case "ghgScore":
-          aValue = a.ghgScore;
-          bValue = b.ghgScore;
-          break;
-        case "exceedEmissions":
-          aValue = a.exceedEmissions;
-          bValue = b.exceedEmissions;
-          break;
-        case "penalty2030":
-          aValue = a.penalty2030;
-          bValue = b.penalty2030;
-          break;
-      }
-
-      return performanceSortDirection === "asc"
-        ? aValue - bValue
-        : bValue - aValue;
-    },
-  );
+    return performanceSortDirection === "asc"
+      ? aValue - bValue
+      : bValue - aValue;
+  });
 
   // Sort Project Impact data
-  const sortedProjectData = [...filteredProjectData].sort(
-    (a, b) => {
-      if (!projectSortColumn) return 0;
+  const sortedProjectData = [...filteredProjectData].sort((a, b) => {
+    if (!projectSortColumn) return 0;
 
-      let aValue: number = 0;
-      let bValue: number = 0;
+    const aValue = a[projectSortColumn];
+    const bValue = b[projectSortColumn];
 
-      switch (projectSortColumn) {
-        case "ghgReduction":
-          aValue = a.ghgReduction;
-          bValue = b.ghgReduction;
-          break;
-        case "kwhSavings":
-          aValue = a.kwhSavings;
-          bValue = b.kwhSavings;
-          break;
-        case "incentive":
-          aValue = a.incentive;
-          bValue = b.incentive;
-          break;
-      }
-
-      return projectSortDirection === "asc"
-        ? aValue - bValue
-        : bValue - aValue;
-    },
-  );
+    return projectSortDirection === "asc"
+      ? aValue - bValue
+      : bValue - aValue;
+  });
 
   // Calculate totals for Building Performance Summary
   const totalExceedEmissions = filteredBuildingScores.reduce(
@@ -238,23 +213,22 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
     0,
   );
 
-  const totalProperties = 10;
+  const totalProperties = LL97Data.length;
 
   // Calculate compliance status categories based on ALL buildings (not filtered)
-  // Limit is 4.53, Close is within 9% (4.53 * 0.91 = 4.1223)
   const GHG_LIMIT = 4.53;
-  const CLOSE_THRESHOLD = GHG_LIMIT * 0.91; // 4.1223
+  const CLOSE_THRESHOLD = GHG_LIMIT * 0.91;
 
   const buildingsOverLimit = LL97Data.filter(
-    (b) => b.ghgScore > GHG_LIMIT
+    (b) => b.ghgScore > GHG_LIMIT,
   ).length;
 
   const buildingsClose = LL97Data.filter(
-    (b) => b.ghgScore > CLOSE_THRESHOLD && b.ghgScore <= GHG_LIMIT
+    (b) => b.ghgScore > CLOSE_THRESHOLD && b.ghgScore <= GHG_LIMIT,
   ).length;
 
   const buildingsGood = LL97Data.filter(
-    (b) => b.ghgScore <= CLOSE_THRESHOLD
+    (b) => b.ghgScore <= CLOSE_THRESHOLD,
   ).length;
 
   // Calculate total penalty for all buildings
@@ -342,7 +316,9 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
           {/* Right Side: Status Distribution Chart (70%) */}
           <div className="w-full lg:w-[70%]">
             <Card className="p-6 h-full">
-              <h3 className="mb-4 text-gray-900">Compliance Status Distribution (2030 Target : 4.53)</h3>
+              <h3 className="mb-4 text-gray-900">
+                Compliance Status Distribution (2030 Target : 4.53)
+              </h3>
               <div className="flex flex-col md:flex-row items-stretch gap-8">
                 {/* Donut Chart with center text */}
                 <div className="w-full md:w-2/5 flex items-center justify-center relative">
@@ -363,8 +339,12 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                           <Cell
                             key={`cell-${index}`}
                             fill={entry.color}
-                            stroke={activeStatus === entry.name ? "#000" : "none"}
-                            strokeWidth={activeStatus === entry.name ? 3 : 0}
+                            stroke={
+                              activeStatus === entry.name ? "#000" : "none"
+                            }
+                            strokeWidth={
+                              activeStatus === entry.name ? 3 : 0
+                            }
                             className="transition-all duration-200 hover:opacity-80"
                           />
                         ))}
@@ -388,11 +368,13 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                   </div>
                 </div>
 
-                {/* Status cards - more integrated */}
+                {/* Status cards */}
                 <div className="w-full md:w-3/5 flex flex-col justify-center space-y-3">
                   <div
                     className={`p-4 rounded-lg bg-green-50 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] border-2 ${
-                      activeStatus === "Good" ? "border-green-500 shadow-md" : "border-transparent"
+                      activeStatus === "Good"
+                        ? "border-green-500 shadow-md"
+                        : "border-transparent"
                     }`}
                     onClick={() => handleCardClick("Good")}
                   >
@@ -403,7 +385,9 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                         </div>
                         <div>
                           <p className="text-gray-900">Good Standing</p>
-                          <p className="text-xs text-gray-600">GHG Score ≤ 4.12</p>
+                          <p className="text-xs text-gray-600">
+                            GHG Score ≤ 4.12
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -415,7 +399,9 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
 
                   <div
                     className={`p-4 rounded-lg bg-yellow-50 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] border-2 ${
-                      activeStatus === "Close" ? "border-yellow-500 shadow-md" : "border-transparent"
+                      activeStatus === "Close"
+                        ? "border-yellow-500 shadow-md"
+                        : "border-transparent"
                     }`}
                     onClick={() => handleCardClick("Close")}
                   >
@@ -426,7 +412,9 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                         </div>
                         <div>
                           <p className="text-gray-900">Close to Limit</p>
-                          <p className="text-xs text-gray-600">Within 9% of limit</p>
+                          <p className="text-xs text-gray-600">
+                            Within 9% of limit
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -438,7 +426,9 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
 
                   <div
                     className={`p-4 rounded-lg bg-red-50 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] border-2 ${
-                      activeStatus === "Over" ? "border-red-500 shadow-md" : "border-transparent"
+                      activeStatus === "Over"
+                        ? "border-red-500 shadow-md"
+                        : "border-transparent"
                     }`}
                     onClick={() => handleCardClick("Over")}
                   >
@@ -449,7 +439,9 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                         </div>
                         <div>
                           <p className="text-gray-900">Over Limit</p>
-                          <p className="text-xs text-gray-600">GHG Score &gt; 4.53</p>
+                          <p className="text-xs text-gray-600">
+                            GHG Score &gt; 4.53
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -463,116 +455,13 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
             </Card>
           </div>
         </div>
-
-        {/* Bottom Row: Status Distribution Chart */}
-        {/* <Card className="p-6">
-          <h3 className="mb-6 text-gray-900">Compliance Status Distribution</h3>
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            {/* Donut Chart */}
-            {/* <div className="w-full md:w-1/2 h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    paddingAngle={2}
-                    dataKey="value"
-                    onClick={handleChartClick}
-                    className="cursor-pointer focus:outline-none"
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={entry.color}
-                        stroke={activeStatus === entry.name ? "#000" : "none"}
-                        strokeWidth={activeStatus === entry.name ? 3 : 0}
-                        className="transition-all duration-200 hover:opacity-80"
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value: number) => [value, "Buildings"]}
-                    contentStyle={{
-                      backgroundColor: "white",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: "6px",
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Legend with clickable cards */}
-            {/* <div className="w-full md:w-1/2 space-y-3">
-              <Card
-                className={`p-4 bg-green-50 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-102 ${
-                  activeStatus === "Good" ? "ring-2 ring-green-500 shadow-md" : ""
-                }`}
-                onClick={() => handleCardClick("Good")}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="w-6 h-6 text-green-600" />
-                    <div>
-                      <p className="text-gray-900">Good</p>
-                      <p className="text-xs text-gray-600">GHG Score ≤ 4.12</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-900">{buildingsGood}</p>
-                </div>
-              </Card>
-
-              <Card
-                className={`p-4 bg-yellow-50 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-102 ${
-                  activeStatus === "Close" ? "ring-2 ring-yellow-500 shadow-md" : ""
-                }`}
-                onClick={() => handleCardClick("Close")}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <AlertTriangle className="w-6 h-6 text-yellow-600" />
-                    <div>
-                      <p className="text-gray-900">Close</p>
-                      <p className="text-xs text-gray-600">Within 9% of limit</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-900">{buildingsClose}</p>
-                </div>
-              </Card>
-
-              <Card
-                className={`p-4 bg-red-50 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-102 ${
-                  activeStatus === "Over" ? "ring-2 ring-red-500 shadow-md" : ""
-                }`}
-                onClick={() => handleCardClick("Over")}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <AlertCircle className="w-6 h-6 text-red-600" />
-                    <div>
-                      <p className="text-gray-900">Over</p>
-                      <p className="text-xs text-gray-600">GHG Score &gt; 4.53</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-900">{buildingsOverLimit}</p>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </Card> */}
       </div>
 
       {/* Filter Button */}
       <div className="flex justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2"
-            >
+            <Button variant="outline" className="flex items-center gap-2">
               <Filter className="w-4 h-4" />
               Filter Buildings ({selectedBuildings.length})
             </Button>
@@ -585,9 +474,7 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                 <Input
                   placeholder="Search buildings..."
                   value={searchTerm}
-                  onChange={(e) =>
-                    setSearchTerm(e.target.value)
-                  }
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
                 />
               </div>
@@ -595,10 +482,7 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
 
             {/* Select All Checkbox */}
             <DropdownMenuCheckboxItem
-              checked={
-                selectedBuildings.length ===
-                uniqueBuildings.length
-              }
+              checked={selectedBuildings.length === uniqueBuildings.length}
               onCheckedChange={toggleAll}
             >
               All Buildings
@@ -610,12 +494,8 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                 filteredUniqueBuildings.map((building) => (
                   <DropdownMenuCheckboxItem
                     key={building}
-                    checked={selectedBuildings.includes(
-                      building,
-                    )}
-                    onCheckedChange={() =>
-                      toggleBuilding(building)
-                    }
+                    checked={selectedBuildings.includes(building)}
+                    onCheckedChange={() => toggleBuilding(building)}
                   >
                     {building}
                   </DropdownMenuCheckboxItem>
@@ -643,21 +523,18 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
 
       {/* Building Performance Table */}
       <Card className="p-6">
-        <h3 className="mb-4 text-gray-900">
-          Building Performance Summary
-        </h3>
+        <h3 className="mb-4 text-gray-900">Building Performance Summary</h3>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-left">
-                  Building
-                </TableHead>
-                <TableHead className="text-center cursor-pointer" onClick={() => handlePerformanceSort("ghgScore")}>
+                <TableHead className="text-left">Building</TableHead>
+                <TableHead
+                  className="text-center cursor-pointer"
+                  onClick={() => handlePerformanceSort("ghgScore")}
+                >
                   <div className="inline-flex items-center gap-2 hover:text-gray-900 transition-colors">
-                    <span className="break-words">
-                      GHG Score
-                    </span>
+                    <span className="break-words">GHG Score</span>
                     {performanceSortColumn === "ghgScore" ? (
                       performanceSortDirection === "desc" ? (
                         <ChevronDown className="w-4 h-4" />
@@ -669,7 +546,10 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                     )}
                   </div>
                 </TableHead>
-                <TableHead className="text-center cursor-pointer" onClick={() => handlePerformanceSort("exceedEmissions")}>
+                <TableHead
+                  className="text-center cursor-pointer"
+                  onClick={() => handlePerformanceSort("exceedEmissions")}
+                >
                   <div className="inline-flex items-center gap-2 hover:text-gray-900 transition-colors">
                     <span className="break-words">
                       Exceed GHG Emissions (tCO2e)
@@ -685,11 +565,12 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                     )}
                   </div>
                 </TableHead>
-                <TableHead className="text-center cursor-pointer" onClick={() => handlePerformanceSort("penalty2030")}>
+                <TableHead
+                  className="text-center cursor-pointer"
+                  onClick={() => handlePerformanceSort("penalty2030")}
+                >
                   <div className="inline-flex items-center gap-2 hover:text-gray-900 transition-colors">
-                    <span className="break-words">
-                      2030 Penalties ($)
-                    </span>
+                    <span className="break-words">2030 Penalties ($)</span>
                     {performanceSortColumn === "penalty2030" ? (
                       performanceSortDirection === "desc" ? (
                         <ChevronDown className="w-4 h-4" />
@@ -742,9 +623,7 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                   </strong>
                 </TableCell>
                 <TableCell className="text-center">
-                  <strong>
-                    ${totalPenalty2030.toLocaleString()}
-                  </strong>
+                  <strong>${totalPenalty2030.toLocaleString()}</strong>
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -754,24 +633,19 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
 
       {/* Project Impact Table */}
       <Card className="p-6">
-        <h3 className="mb-4 text-gray-900">
-          Project Impact Summary
-        </h3>
+        <h3 className="mb-4 text-gray-900">Project Impact Summary</h3>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-left">
-                  Building
-                </TableHead>
-                <TableHead className="text-left">
-                  Project Title
-                </TableHead>
-                <TableHead className="text-center cursor-pointer" onClick={() => handleProjectSort("ghgReduction")}>
+                <TableHead className="text-left">Building</TableHead>
+                <TableHead className="text-left">Project Title</TableHead>
+                <TableHead
+                  className="text-center cursor-pointer"
+                  onClick={() => handleProjectSort("ghgReduction")}
+                >
                   <div className="inline-flex items-center gap-2 hover:text-gray-900 transition-colors">
-                    <span className="break-words">
-                      GHG Score Reduction
-                    </span>
+                    <span className="break-words">GHG Score Reduction</span>
                     {projectSortColumn === "ghgReduction" ? (
                       projectSortDirection === "desc" ? (
                         <ChevronDown className="w-4 h-4" />
@@ -783,11 +657,12 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                     )}
                   </div>
                 </TableHead>
-                <TableHead className="text-center cursor-pointer" onClick={() => handleProjectSort("kwhSavings")}>
+                <TableHead
+                  className="text-center cursor-pointer"
+                  onClick={() => handleProjectSort("kwhSavings")}
+                >
                   <div className="inline-flex items-center gap-2 hover:text-gray-900 transition-colors">
-                    <span className="break-words">
-                      kWh Savings
-                    </span>
+                    <span className="break-words">kWh Savings</span>
                     {projectSortColumn === "kwhSavings" ? (
                       projectSortDirection === "desc" ? (
                         <ChevronDown className="w-4 h-4" />
@@ -799,7 +674,10 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                     )}
                   </div>
                 </TableHead>
-                <TableHead className="text-center cursor-pointer" onClick={() => handleProjectSort("incentive")}>
+                <TableHead
+                  className="text-center cursor-pointer"
+                  onClick={() => handleProjectSort("incentive")}
+                >
                   <div className="inline-flex items-center gap-2 hover:text-gray-900 transition-colors">
                     <span className="break-words">
                       Estimated Incentive ($)
@@ -846,9 +724,7 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                   <strong>-</strong>
                 </TableCell>
                 <TableCell className="text-center text-green-600">
-                  <strong>
-                    -{totalGhgReduction.toFixed(1)}
-                  </strong>
+                  <strong>-{totalGhgReduction.toFixed(1)}</strong>
                 </TableCell>
                 <TableCell className="text-center">
                   <strong>
@@ -856,18 +732,13 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
                   </strong>
                 </TableCell>
                 <TableCell className="text-center">
-                  <strong>
-                    ${totalIncentive.toLocaleString()}
-                  </strong>
+                  <strong>${totalIncentive.toLocaleString()}</strong>
                 </TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </div>
       </Card>
-
-      {/* Status Reference */}
-      {/* Removed - status information now integrated in the chart legend */}
     </div>
   );
 }
