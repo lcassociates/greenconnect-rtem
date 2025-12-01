@@ -214,7 +214,7 @@ export function LocalLaw88Lighting({
     }
   };
 
-  const handleSort = (column: string) => {
+  const handleSort = (column: SortableLL88LightingKey) => {
     if (sortColumn === column) {
       setSortDirection(
         sortDirection === "asc" ? "desc" : "asc",
