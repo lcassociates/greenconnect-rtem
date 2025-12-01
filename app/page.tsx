@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
       {/* Header */}
-      <header className="bg-white h-14 sm:h-16 shadow flex items-center justify-between px-4 sm:px-8 sticky top-0 z-10">
+      {/* <header className="bg-white h-14 sm:h-16 shadow flex items-center justify-between px-4 sm:px-8 sticky top-0 z-10">
         <h2 className="text-base sm:text-lg font-semibold truncate">
           {title}
         </h2>
@@ -28,7 +28,7 @@ export default function Home() {
             ← Back
           </button>
         )}
-      </header>
+      </header> */}
 
       {/* Body */}
       <main className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-8 sm:space-y-10">

@@ -11,7 +11,7 @@ import { LocalLaw97 } from "./client-views/compliance/LocalLaw97";
 import { ActiveProjects } from "./client-views/ActiveProjects";
 import { PropertyList } from "./client-views/PropertyList";
 import { SubmeteringPage } from "./property-views/SubmeteringPage"
-import { ActiveProjectsPage } from "./property-views/ActiveProjectPage"
+import { ActiveProjectPage } from "./property-views/ActiveProjectPage"
 import { ProcurementContract } from "./client-views/ProcurementContract";
 import { PropertyDetailPage } from "./PropertyDetailPage";
 import { DOBCompliancePage } from "./property-views/DOBCompliancePage";
@@ -127,7 +127,7 @@ export function GeneralOverviewPage({
     }
     if (buildingSection === "active-projects") {
       return (
-        <ActiveProjectsPage
+        <ActiveProjectPage
           buildingName={selectedBuilding}
           clientId={clientId}
           onBack={handleBackToBuildingDetail}
