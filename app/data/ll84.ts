@@ -12,7 +12,7 @@ export interface LL84Row {
   compliance: number;
 }
 
-export const ll84Data: LL84Row[] = [
+export const LL84Data: LL84Row[] = [
   {
     building: "100 Broadway",
     status: "Not Started",

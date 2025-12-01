@@ -37,8 +37,8 @@ import {
 } from "../../ui/table";
 
 import {
-  ll88SubmeteringData,
-  LL88SubmeteringRow,
+  LL88SubmeteringData,
+  type LL88SubmeteringRow,
   LL88SubmeteringStatus,
 } from "../../../data/ll88Submetering"; // adjust path if your folder differs
 
@@ -46,17 +46,12 @@ interface LocalLaw88SubmeteringProps {
   clientId: string;
 }
 
-type SortableLL88SubmeteringKey =
-  | "building"
-  | "status"
-  | "installationYear"
-  | "meterCount"
-  | "tenants";
+type SortableLL88SubmeteringKey = keyof LL88SubmeteringRow
 
 
 export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) {
   const [selectedBuildings, setSelectedBuildings] = useState<string[]>(
-    ll88SubmeteringData.map((b) => b.building),
+    LL88SubmeteringData.map((b) => b.building),
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] =
@@ -76,7 +71,7 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
     useState<LL88SubmeteringStatus[]>(allStatuses);
 
   const uniqueBuildings = Array.from(
-    new Set(ll88SubmeteringData.map((b) => b.building)),
+    new Set(LL88SubmeteringData.map((b) => b.building)),
   );
 
   // Filter buildings based on search term
@@ -123,7 +118,7 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
     setSelectedStatuses(allStatuses);
   };
 
-  const filteredData = ll88SubmeteringData.filter(
+  const filteredData = LL88SubmeteringData.filter(
     (b) => selectedBuildings.includes(b.building) && selectedStatuses.includes(b.status),
   );
 

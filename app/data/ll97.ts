@@ -1,6 +1,5 @@
-// app/data/ll97.ts
 
-export interface LL97BuildingScore {
+export interface LL97Row {
   building: string;
   ghgScore: number;
   exceedEmissions: number;
@@ -15,7 +14,7 @@ export interface LL97ProjectRow {
   incentive: number;
 }
 
-export const allBuildingScores: LL97BuildingScore[] = [
+export const LL97Data: LL97Row[] = [
   {
     building: "100 Broadway",
     ghgScore: 5.2,

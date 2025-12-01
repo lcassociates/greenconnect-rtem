@@ -34,7 +34,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { ll84Data, type LL84Row } from "../../../data/ll84";
+import { LL84Data, type LL84Row } from "../../../data/ll84";
 
 type SortableLL84Key = keyof LL84Row; // "building" | "status" | "compliance"
 
@@ -44,7 +44,7 @@ export interface LocalLaw84Props {
 
 export function LocalLaw84({ clientId }: LocalLaw84Props) {
   const [selectedBuildings, setSelectedBuildings] = useState<string[]>(
-    ll84Data.map((b) => b.building),
+    LL84Data.map((b) => b.building),
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] = useState<SortableLL84Key | null>(
@@ -62,11 +62,12 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
     "Due",
     "Exempt",
   ];
+  
   const [selectedStatuses, setSelectedStatuses] =
     useState<string[]>(allStatuses);
 
   const uniqueBuildings = Array.from(
-    new Set(ll84Data.map((b) => b.building)),
+    new Set(LL84Data.map((b) => b.building)),
   );
 
   // Filter buildings based on search term
@@ -113,27 +114,27 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
     setSelectedStatuses(allStatuses);
   };
 
-  const filteredData = ll84Data.filter(
+  const filteredData = LL84Data.filter(
     (b) =>
       selectedBuildings.includes(b.building) &&
       selectedStatuses.includes(b.status),
   );
 
   // Calculate stats from the full dataset (not filtered)
-  const totalBuildings = ll84Data.length;
-  const compliantBuildings = ll84Data.filter(
+  const totalBuildings = LL84Data.length;
+  const compliantBuildings = LL84Data.filter(
     (b) => b.status === "Compliant",
   ).length;
-  const inProgressBuildings = ll84Data.filter(
+  const inProgressBuildings = LL84Data.filter(
     (b) => b.status === "In Progress",
   ).length;
-  const lateBuildings = ll84Data.filter(
+  const lateBuildings = LL84Data.filter(
     (b) => b.status === "Due",
   ).length;
-  const notSubmitted = ll84Data.filter(
+  const notSubmitted = LL84Data.filter(
     (b) => b.status === "Not Started",
   ).length;
-  const exempt = ll84Data.filter(
+  const exempt = LL84Data.filter(
     (b) => b.status === "Exempt",
   ).length;
 

@@ -1,5 +1,3 @@
-// app/data/ll88Lighting.ts
-
 export interface LL88LightingRow {
   building: string;
   status: string;
@@ -8,7 +6,7 @@ export interface LL88LightingRow {
   costSavings: string;
 }
 
-export const ll88LightingData: LL88LightingRow[] = [
+export const LL88LightingData: LL88LightingRow[] = [
   {
     building: "100 Broadway",
     status: "Completed",

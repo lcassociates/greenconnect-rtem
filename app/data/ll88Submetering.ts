@@ -1,4 +1,3 @@
-// app/data/ll88Submetering.ts
 
 export type LL88SubmeteringStatus =
   | "Completed"
@@ -15,7 +14,7 @@ export interface LL88SubmeteringRow {
   tenants: number;
 }
 
-export const ll88SubmeteringData: LL88SubmeteringRow[] = [
+export const LL88SubmeteringData: LL88SubmeteringRow[] = [
   {
     building: "100 Broadway",
     status: "Completed",

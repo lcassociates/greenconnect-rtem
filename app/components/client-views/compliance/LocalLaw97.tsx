@@ -39,21 +39,24 @@ import {
   Tooltip,
 } from "recharts";
 import {
-  allBuildingScores,
-  allProjectData,
+  LL97Data,
+  type LL97Row,
 } from "../../../data/ll97";
 
 interface LocalLaw97Props {
   clientId: string;
 }
 
+// type SortableLL97Key = keyof LL97Row;
+
+type StatusFilter = "Good" | "Close" | "Over";
 
 export function LocalLaw97({ clientId }: LocalLaw97Props) {
   const [selectedBuildings, setSelectedBuildings] = useState<
     string[]
-  >(allBuildingScores.map((b) => b.building));
+  >(LL97Data.map((b) => b.building));
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeStatus, setActiveStatus] = useState<string | null>(null);
+  const [activeStatus, setActiveStatus] = useState<StatusFilter | null>(null);
 
   // Sorting state for Building Performance table
   const [performanceSortColumn, setPerformanceSortColumn] =
@@ -71,7 +74,7 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
     useState<"asc" | "desc">("desc");
 
   const uniqueBuildings = Array.from(
-    new Set(allBuildingScores.map((b) => b.building)),
+    new Set(LL97Data.map((b) => b.building)),
   );
 
   // Filter buildings based on search term
@@ -104,12 +107,12 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
   };
 
   // Handle status card click
-  const handleCardClick = (status: string | null) => {
+  const handleCardClick = (status: StatusFilter | null) => {
     setActiveStatus(activeStatus === status ? null : status);
   };
 
   // Helper function to get building status
-  const getBuildingStatus = (ghgScore: number): string => {
+  const getBuildingStatus = (ghgScore: number): StatusFilter => {
     const GHG_LIMIT = 4.53;
     const CLOSE_THRESHOLD = GHG_LIMIT * 0.91;
     
@@ -142,14 +145,14 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
     }
   };
 
-  const filteredBuildingScores = allBuildingScores
+  const filteredBuildingScores = LL97Data
     .filter((b) => selectedBuildings.includes(b.building))
     .filter((b) => {
       if (!activeStatus) return true;
       return getBuildingStatus(b.ghgScore) === activeStatus;
     });
 
-  const filteredProjectData = allProjectData.filter((p) =>
+  const filteredProjectData = LL97Data.filter((p) =>
     selectedBuildings.includes(p.building),
   );
 
@@ -242,20 +245,20 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
   const GHG_LIMIT = 4.53;
   const CLOSE_THRESHOLD = GHG_LIMIT * 0.91; // 4.1223
 
-  const buildingsOverLimit = allBuildingScores.filter(
+  const buildingsOverLimit = LL97Data.filter(
     (b) => b.ghgScore > GHG_LIMIT
   ).length;
 
-  const buildingsClose = allBuildingScores.filter(
+  const buildingsClose = LL97Data.filter(
     (b) => b.ghgScore > CLOSE_THRESHOLD && b.ghgScore <= GHG_LIMIT
   ).length;
 
-  const buildingsGood = allBuildingScores.filter(
+  const buildingsGood = LL97Data.filter(
     (b) => b.ghgScore <= CLOSE_THRESHOLD
   ).length;
 
   // Calculate total penalty for all buildings
-  const allTotalPenalty2030 = allBuildingScores.reduce(
+  const allTotalPenalty2030 = LL97Data.reduce(
     (sum, row) => sum + row.penalty2030,
     0,
   );
@@ -270,7 +273,7 @@ export function LocalLaw97({ clientId }: LocalLaw97Props) {
   // Handle chart segment click
   const handleChartClick = (data: any) => {
     if (data && data.name) {
-      handleCardClick(data.name);
+      handleCardClick(data.name as StatusFilter);
     }
   };
 
