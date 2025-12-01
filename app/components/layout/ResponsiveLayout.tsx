@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname} from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import Logo from "../../../public/images/GC-logo.png"
 
 const MENU = [
   { label: "Portfolio", href: "/", icon: "📊" },
@@ -76,7 +78,13 @@ function MobileTopBar() {
     <header className="md:hidden sticky top-0 z-40 bg-slate-900/90 border-b border-slate-800">
       <div className="flex items-center justify-between px-4 h-14">
         <Link href="/" className="text-lg font-semibold tracking-tight">
-          GreenConnect
+            <Image
+              src={Logo}
+              alt={"GreenConnect Logo"}
+              width={160}     // adjust size
+              height={40}     // adjust size
+              className="object-contain"
+            />
         </Link>
 
         <button
@@ -123,14 +131,34 @@ function MobileTopBar() {
         <nav className="flex flex-col gap-1 py-2">
           {MENU.map((m) => {
             const active = pathname === m.href;
+            const baseClasses =
+              "flex items-center gap-2 rounded-xl px-3 py-2 hover:bg-slate-800 active:bg-slate-700 " +
+              (active ? "bg-slate-800 text-white" : "text-slate-200");
+
+            // Special handling for Portfolio
+            if (m.href === "/") {
+              return (
+                <button
+                  key={m.href}
+                  type="button"
+                  className={baseClasses}
+                  onClick={() => {
+                    setOpen(false);
+                    // Force full reload, which resets selectedClientId in page.tsx
+                    window.location.href = "/";
+                  }}
+                >
+                  <span className="text-lg" aria-hidden>
+                    {m.icon}
+                  </span>
+                  <span>{m.label}</span>
+                </button>
+              );
+            }
+
+            // Normal links for everything else
             return (
-              <Link
-                key={m.href}
-                href={m.href}
-                className={`flex items-center gap-2 rounded-xl px-3 py-2 hover:bg-slate-800 active:bg-slate-700 ${
-                  active ? "bg-slate-800 text-white" : "text-slate-200"
-                }`}
-              >
+              <Link key={m.href} href={m.href} className={baseClasses}>
                 <span className="text-lg" aria-hidden>
                   {m.icon}
                 </span>
@@ -139,6 +167,7 @@ function MobileTopBar() {
             );
           })}
         </nav>
+
       </div>
     </div>
   )}
@@ -156,7 +185,13 @@ function DesktopSidebar() {
     <aside className="hidden md:flex md:flex-col md:min-h-screen md:sticky md:top-0 md:h-screen bg-slate-900 border-r border-slate-800 p-4">
       <div className="px-2 py-2">
         <Link href="/" className="text-2xl font-bold">
-          GreenConnect
+         <Image
+              src={Logo}
+              alt={"GreenConnect Logo"}
+              width={160}     // adjust size
+              height={40}     // adjust size
+              className="object-contain"
+            />
         </Link>
       </div>
 
@@ -164,14 +199,33 @@ function DesktopSidebar() {
         <ul className="space-y-1">
           {MENU.map((m) => {
             const active = pathname === m.href;
+            const baseClasses =
+              "flex items-center gap-2 rounded-xl px-3 py-2 hover:bg-slate-800 transition-colors " +
+              (active ? "bg-slate-800 text-white" : "text-slate-200");
+
+            if (m.href === "/") {
+              // Force reload for Portfolio
+              return (
+                <li key={m.href}>
+                  <button
+                    type="button"
+                    className={baseClasses + " w-full text-left"}
+                    onClick={() => {
+                      window.location.href = "/";
+                    }}
+                  >
+                    <span className="text-lg" aria-hidden>
+                      {m.icon}
+                    </span>
+                    <span>{m.label}</span>
+                  </button>
+                </li>
+              );
+            }
+
             return (
               <li key={m.href}>
-                <Link
-                  href={m.href}
-                  className={`flex items-center gap-2 rounded-xl px-3 py-2 hover:bg-slate-800 transition-colors ${
-                    active ? "bg-slate-800 text-white" : "text-slate-200"
-                  }`}
-                >
+                <Link href={m.href} className={baseClasses}>
                   <span className="text-lg" aria-hidden>
                     {m.icon}
                   </span>
@@ -182,6 +236,7 @@ function DesktopSidebar() {
           })}
         </ul>
       </nav>
+
 
       <div className="mt-auto pt-4 border-t border-slate-800 text-xs text-slate-400">
         © {year} GreenConnect

@@ -8,8 +8,9 @@ interface PortfolioPageProps {
 export function PortfolioPage({ onClientSelect }: PortfolioPageProps) {
   return (
     <div className="p-8">
-      <h1 className="mb-8 text-gray-900">Portfolio Overview</h1>
-
+      <div>
+       <h1 className="text-base sm:text-lg font-semibold truncate pb-4">Portfolio Overview</h1>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {portfolioClients.map((client) => (
           <Card
