@@ -84,139 +84,13 @@ export function ClientOverviewPage({
   const annualEnergySavings = 340000;
 
   return (
-    <div className="p-8 space-y-6">
+  <div className="p-8 space-y-6">
       {/* Welcome Section */}
       <div>
         <h2 className="text-gray-900 mb-2">Portfolio Dashboard</h2>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">
-                Total Properties
-              </p>
-              <p className="text-gray-900">{totalProperties}</p>
-            </div>
-            <Building2 className="w-8 h-8 text-blue-600" />
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">
-                Active Projects
-              </p>
-              <p className="text-gray-900">{activeProjects}</p>
-            </div>
-            <FolderKanban className="w-8 h-8 text-orange-600" />
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">
-                Annual Energy Savings
-              </p>
-              <p className="text-gray-900">{annualEnergySavings.toLocaleString()} kWh</p>
-            </div>
-            <TrendingDown className="w-8 h-8 text-green-600" />
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">
-                Cost Savings (YTD)
-              </p>
-              <p className="text-gray-900">$42.5K</p>
-              <p className="text-xs text-green-600 mt-1">
-                +12% vs last year
-              </p>
-            </div>
-            <DollarSign className="w-8 h-8 text-green-600" />
-          </div>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activities */}
-        <Card className="p-6">
-          <h3 className="mb-4 text-gray-900">Recent Activities</h3>
-          <div className="space-y-4">
-            {recentActivities.map((activity) => (
-              <div
-                key={activity.id}
-                className="flex items-start justify-between pb-4 border-b border-gray-100 last:border-0 last:pb-0"
-              >
-                <div className="flex items-start gap-3">
-                  {activity.status === "completed" && (
-                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                  )}
-                  {activity.status === "in-progress" && (
-                    <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
-                  )}
-                  {activity.status === "pending" && (
-                    <AlertCircle className="w-5 h-5 text-orange-600 mt-0.5" />
-                  )}
-                  <div>
-                    <p className="text-sm text-gray-900">
-                      {activity.action}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {activity.building}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500">{activity.date}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Upcoming Deadlines */}
-        <Card className="p-6">
-          <h3 className="mb-4 text-gray-900">Upcoming Deadlines</h3>
-          <div className="space-y-4">
-            {upcomingDeadlines.map((deadline) => (
-              <div
-                key={deadline.id}
-                className="flex items-start justify-between pb-4 border-b border-gray-100 last:border-0 last:pb-0"
-              >
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="text-sm text-gray-900">
-                      {deadline.task}
-                    </p>
-                    <Badge
-                      variant={
-                        deadline.priority === "high"
-                          ? "destructive"
-                          : "secondary"
-                      }
-                    >
-                      {deadline.priority}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    {deadline.building}
-                  </p>
-                </div>
-                <p className="text-xs text-gray-500">
-                  {deadline.deadline}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-
-      {/* Quick Stats Summary */}
+      {/* Compliance Overview */}
       <Card className="p-6">
         <h3 className="mb-4 text-gray-900">Compliance Overview</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -259,7 +133,7 @@ export function ClientOverviewPage({
                   <AlertCircle className="w-4 h-4 text-red-600" />
                   <p className="text-sm text-gray-900">LL97 Due</p>
                 </div>
-                <Badge variant="default" className="text-sm px-3 py-1">
+                <Badge variant="destructive" className="text-sm px-3 py-1">
                   3 properties
                 </Badge>
               </div>
@@ -271,6 +145,73 @@ export function ClientOverviewPage({
           </div>
         </div>
       </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Key Metrics */}
+        <Card className="p-6">
+          <h3 className="mb-6 text-gray-900">Portfolio Summary</h3>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center pb-4 border-b border-gray-100">
+              <p className="text-sm text-gray-500">Total Properties</p>
+              <p className="text-gray-900">{totalProperties}</p>
+            </div>
+            
+            <div className="flex justify-between items-center pb-4 border-b border-gray-100">
+              <p className="text-sm text-gray-500">Active Projects</p>
+              <p className="text-gray-900">{activeProjects}</p>
+            </div>
+            
+            <div className="flex justify-between items-center pb-4 border-b border-gray-100">
+              <p className="text-sm text-gray-500">Annual Energy Savings</p>
+              <p className="text-gray-900">{annualEnergySavings.toLocaleString()} kWh</p>
+            </div>
+            
+            <div className="flex justify-between items-center">
+              <p className="text-sm text-gray-500">Cost Savings (YTD)</p>
+              <div className="text-right">
+                <p className="text-gray-900">$42.5K</p>
+                <p className="text-xs text-green-600">+12% vs last year</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Upcoming Deadlines */}
+        <Card className="p-6">
+          <h3 className="mb-4 text-gray-900">Upcoming Deadlines</h3>
+          <div className="space-y-4">
+            {upcomingDeadlines.map((deadline) => (
+              <div
+                key={deadline.id}
+                className="flex items-start justify-between pb-4 border-b border-gray-100 last:border-0 last:pb-0"
+              >
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-sm text-gray-900">
+                      {deadline.task}
+                    </p>
+                    <Badge
+                      variant={
+                        deadline.priority === "high"
+                          ? "destructive"
+                          : "secondary"
+                      }
+                    >
+                      {deadline.priority}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    {deadline.building}
+                  </p>
+                </div>
+                <p className="text-xs text-gray-500">
+                  {deadline.deadline}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }
