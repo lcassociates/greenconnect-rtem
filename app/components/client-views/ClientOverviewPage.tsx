@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 
-interface PropertyOverviewPageProps {
+interface ClientOverviewPageProps {
   clientId: string;
 }
 
@@ -76,9 +76,9 @@ const upcomingDeadlines = [
   },
 ];
 
-export function PropertyOverviewPage({
+export function ClientOverviewPage({
   clientId,
-}: PropertyOverviewPageProps) {
+}: ClientOverviewPageProps) {
   const totalProperties = 10;
   const activeProjects = 8;
   const annualEnergySavings = 340000;

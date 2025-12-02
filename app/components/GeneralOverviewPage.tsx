@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
-import { PropertyOverviewPage } from "./property-views/PropertyOverviewPage";
+import { ClientOverviewPage } from "./client-views/ClientOverviewPage";
 import { LocalLaw84 } from "./client-views/compliance/LocalLaw84";
 import { LocalLaw88Lighting } from "./client-views/compliance/LocalLaw88Lighting";
 import { LocalLaw88Submetering } from "./client-views/compliance/LocalLaw88Submetering";
@@ -379,11 +379,11 @@ export function GeneralOverviewPage({
       <div className="flex-1 overflow-auto">
         {currentSection === "main" &&
           activeView === "overview" && (
-            <PropertyOverviewPage clientId={clientId} />
+            <ClientOverviewPage clientId={clientId} />
           )}
         {currentSection === "general-overview" &&
           activeView === "overview" && (
-            <PropertyOverviewPage clientId={clientId} />
+            <ClientOverviewPage clientId={clientId} />
           )}
         {activeView === "local-law-84" && (
           <LocalLaw84 clientId={clientId} />
