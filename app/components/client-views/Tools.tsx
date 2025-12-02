@@ -1,5 +1,8 @@
+interface ToolsProps {
+  clientId: string;
+}
 
-export default function Tools() {
+export function Tools({ clientId }: ToolsProps) {
   return (
     <div
       style={{
