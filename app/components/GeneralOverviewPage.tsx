@@ -248,7 +248,7 @@ export function GeneralOverviewPage({
                 onClick={() => {
                   setCurrentSection("general-overview");
                   setIsOverviewExpanded(true);
-                  setActiveView("overview");
+                  setActiveView("active-projects");
                 }}
                 className="flex items-center gap-2"
               >
