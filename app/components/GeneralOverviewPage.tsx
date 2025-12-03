@@ -133,7 +133,7 @@ export function GeneralOverviewPage({
     // Render building section pages
     if (buildingSection === "sub-metering") {
       return (
-        <SubMeteringPage
+        <SubmeteringPage
           buildingName={selectedBuilding}
           clientId={clientId}
           onBack={handleBackToBuildingDetail}
