@@ -2,22 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { ArrowLeft, ChevronRight } from "lucide-react";
-import { Button } from "./ui/button";
-import { ClientOverviewPage } from "../portfolio/client-views/ClientOverviewPage";
-import { LocalLaw84 } from "../portfolio/client-views/compliance/LocalLaw84";
-import { LocalLaw88Lighting } from "../portfolio/client-views/compliance/LocalLaw88Lighting";
-import { LocalLaw88Submetering } from "../portfolio/client-views/compliance/LocalLaw88Submetering";
-import { LocalLaw97 } from "../portfolio/client-views/compliance/LocalLaw97";
-import { ActiveProjects } from "../portfolio/client-views/ActiveProjects";
-import { PropertyList } from "../portfolio/client-views/PropertyList";
-import { Tools } from  "../portfolio/client-views/Tools";
-import { SubmeteringPage } from "../portfolio/property-views/SubmeteringPage"
-import { ActiveProjectPage } from "../portfolio/property-views/ActiveProjectPage"
-import { ProcurementContract } from "../portfolio/client-views/ProcurementContract";
+import { Button } from "../components/ui/button";
+import { ClientOverviewPage } from "./client-views/ClientOverviewPage";
+import { LocalLaw84 } from "./client-views/compliance/LocalLaw84";
+import { LocalLaw88Lighting } from "./client-views/compliance/LocalLaw88Lighting";
+import { LocalLaw88Submetering } from "./client-views/compliance/LocalLaw88Submetering";
+import { LocalLaw97 } from "./client-views/compliance/LocalLaw97";
+import { ActiveProjects } from "./client-views/ActiveProjects";
+import { PropertyList } from "./client-views/PropertyList";
+import { Tools } from  "./client-views/Tools";
+import { SubmeteringPage } from "./property-views/SubmeteringPage"
+import { ActiveProjectPage } from "./property-views/ActiveProjectPage"
+import { ProcurementContract } from "./client-views/ProcurementContract";
 import { PropertyDetailPage } from "./PropertyDetailPage";
-import { DOBCompliancePage } from "../portfolio/property-views/DOBCompliancePage";
-import { EnergyProcurementPage } from "../portfolio/property-views/EnergyProcurementPage";
-import { EquipmentSchedulePage } from "../portfolio/property-views/EquipmentSchedulePage";
+import { DOBCompliancePage } from "./property-views/DOBCompliancePage";
+import { EnergyProcurementPage } from "./property-views/EnergyProcurementPage";
+import { EquipmentSchedulePage } from "./property-views/EquipmentSchedulePage";
 
 interface GeneralOverviewPageProps {
   clientId: string;

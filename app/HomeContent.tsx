@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { PortfolioPage } from "./components/PortfolioPage";
-import { GeneralOverviewPage } from "./components/GeneralOverviewPage";
+import { PortfolioPage } from "./portfolio/PortfolioPage";
+import { GeneralOverviewPage } from "./portfolio/GeneralOverviewPage";
 
 export default function HomeContent() {
   const router = useRouter();

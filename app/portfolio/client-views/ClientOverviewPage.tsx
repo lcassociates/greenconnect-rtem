@@ -1,12 +1,8 @@
 import { Card } from "../../components/ui/card";
 import {
-  Building2,
-  DollarSign,
-  TrendingDown,
   CheckCircle,
   AlertCircle,
   Clock,
-  FolderKanban,
 } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 

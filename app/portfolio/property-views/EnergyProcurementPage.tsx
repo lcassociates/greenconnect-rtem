@@ -115,13 +115,6 @@ export function EnergyProcurementPage({
     });
   }
 
-  const countdownBg =
-    daysLeft <= 30
-      ? "bg-red-600"
-      : daysLeft <= 60
-        ? "bg-amber-500"
-        : "bg-slate-900";
-
   return (
     <div className="h-full flex flex-col">
       <div className="bg-white border-b border-gray-200 px-8 py-6">
