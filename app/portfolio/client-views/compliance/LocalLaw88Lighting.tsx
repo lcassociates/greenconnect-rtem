@@ -1,31 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "../../ui/card";
+import { Card } from "../../../components/ui/card";
 import {
   Building2,
   CheckCircle2,
-  AlertCircle,
   Activity,
-  FileText,
+  AlertCircle,
   Filter,
   Search,
   ChevronUp,
   ChevronDown,
-  Info,
   PlayCircle,
+  Info,
   MinusCircle,
+  FileText,
   ExternalLink,
 } from "lucide-react";
-import { Badge } from "../../ui/badge";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+import { Badge } from "../../../components/ui/badge";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+} from "../../../components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -33,46 +33,51 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../ui/table";
-import { LL84Data, type LL84Row } from "../../../data/ll84";
+} from "../../../components/ui/table";
+import {
+  LL88LightingData,
+  type LL88LightingRow,
+} from "../../../data/ll88Lighting";
 
-type SortableLL84Key = keyof LL84Row; // "building" | "status" | "compliance"
-
-export interface LocalLaw84Props {
+export interface LocalLaw88LightingProps {
   clientId: string;
 }
 
-export function LocalLaw84({ clientId }: LocalLaw84Props) {
-  const [selectedBuildings, setSelectedBuildings] = useState<string[]>(
-    LL84Data.map((b) => b.building),
-  );
+type SortableLL88LightingKey = keyof LL88LightingRow; // "building" | "status" | "compliance"
+
+export function LocalLaw88Lighting({
+  clientId,
+}: LocalLaw88LightingProps) {
+  const [selectedBuildings, setSelectedBuildings] = useState<
+    string[]
+  >(LL88LightingData.map((b) => b.building));
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortColumn, setSortColumn] = useState<SortableLL84Key | null>(
+  const [sortColumn, setSortColumn] = useState<SortableLL88LightingKey | null>(
     null,
   );
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">(
-    "asc",
-  );
+  const [sortDirection, setSortDirection] = useState<
+    "asc" | "desc"
+  >("asc");
 
   // Status filtering
   const allStatuses = [
-    "Compliant",
+    "Completed",
     "In Progress",
     "Not Started",
-    "Due",
     "Exempt",
+    "Due",
   ];
-  
   const [selectedStatuses, setSelectedStatuses] =
     useState<string[]>(allStatuses);
 
   const uniqueBuildings = Array.from(
-    new Set(LL84Data.map((b) => b.building)),
+    new Set(LL88LightingData.map((b) => b.building)),
   );
 
   // Filter buildings based on search term
-  const filteredUniqueBuildings = uniqueBuildings.filter((building) =>
-    building.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredUniqueBuildings = uniqueBuildings.filter(
+    (building) =>
+      building.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const toggleBuilding = (building: string) => {
@@ -114,28 +119,27 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
     setSelectedStatuses(allStatuses);
   };
 
-  const filteredData = LL84Data.filter(
+  const filteredData = LL88LightingData.filter(
     (b) =>
       selectedBuildings.includes(b.building) &&
       selectedStatuses.includes(b.status),
   );
 
-  // Calculate stats from the full dataset (not filtered)
-  const totalBuildings = LL84Data.length;
-  const compliantBuildings = LL84Data.filter(
-    (b) => b.status === "Compliant",
+  const totalBuildings = LL88LightingData.length;
+  const completedBuildings = LL88LightingData.filter(
+    (b) => b.status === "Completed",
   ).length;
-  const inProgressBuildings = LL84Data.filter(
+  const inProgress = LL88LightingData.filter(
     (b) => b.status === "In Progress",
   ).length;
-  const lateBuildings = LL84Data.filter(
-    (b) => b.status === "Due",
-  ).length;
-  const notSubmitted = LL84Data.filter(
+  const notStarted = LL88LightingData.filter(
     (b) => b.status === "Not Started",
   ).length;
-  const exempt = LL84Data.filter(
+  const exempt = LL88LightingData.filter(
     (b) => b.status === "Exempt",
+  ).length;
+  const atRisk = LL88LightingData.filter(
+    (b) => b.status === "Due",
   ).length;
 
   const stats = [
@@ -147,29 +151,29 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
       status: "all",
     },
     {
-      label: "Compliant",
-      value: compliantBuildings.toString(),
+      label: "Completed",
+      value: completedBuildings.toString(),
       icon: CheckCircle2,
       color: "text-green-600",
-      status: "Compliant",
+      status: "Completed",
     },
     {
       label: "In Progress",
-      value: inProgressBuildings.toString(),
+      value: inProgress.toString(),
       icon: Activity,
       color: "text-blue-600",
       status: "In Progress",
     },
     {
       label: "Not Started",
-      value: notSubmitted.toString(),
+      value: notStarted.toString(),
       icon: PlayCircle,
       color: "text-orange-600",
       status: "Not Started",
     },
     {
       label: "Due",
-      value: lateBuildings.toString(),
+      value: atRisk.toString(),
       icon: AlertCircle,
       color: "text-red-600",
       status: "Due",
@@ -183,23 +187,6 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
     },
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Compliant":
-        return "bg-green-100 text-green-800";
-      case "In Progress":
-        return "bg-blue-100 text-blue-800";
-      case "Due":
-        return "bg-red-100 text-red-800";
-      case "Not Started":
-        return "bg-orange-100 text-orange-800";
-      case "Exempt":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
   const handleCardClick = (status: string) => {
     if (status === "all") {
       // Show all statuses
@@ -210,9 +197,28 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
     }
   };
 
-  const handleSort = (column: SortableLL84Key) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Completed":
+        return "bg-green-100 text-green-800";
+      case "In Progress":
+        return "bg-blue-100 text-blue-800";
+      case "Not Started":
+        return "bg-orange-100 text-orange-800";
+      case "Exempt":
+        return "bg-gray-100 text-gray-800";
+      case "Due":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const handleSort = (column: SortableLL88LightingKey) => {
     if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+      setSortDirection(
+        sortDirection === "asc" ? "desc" : "asc",
+      );
     } else {
       setSortColumn(column);
       setSortDirection("asc");
@@ -222,45 +228,77 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
   const sortedData = [...filteredData].sort((a, b) => {
     if (!sortColumn) return 0;
 
-    const aVal = a[sortColumn];
-    const bVal = b[sortColumn];
+    // Handle different data types
+    let aValue: any = a[sortColumn];
+    let bValue: any = b[sortColumn];
 
-    // numeric column
-    if (sortColumn === "compliance") {
-      const aNum = aVal as number;
-      const bNum = bVal as number;
-      return sortDirection === "asc" ? aNum - bNum : bNum - aNum;
+    // For numeric comparisons
+    if (sortColumn === "upgradeYear") {
+      if (aValue < bValue)
+        return sortDirection === "asc" ? -1 : 1;
+      if (aValue > bValue)
+        return sortDirection === "asc" ? 1 : -1;
+      return 0;
     }
 
-    // string columns (building, status)
-    const aStr = String(aVal);
-    const bStr = String(bVal);
+    // For savings (string with commas and units)
+    if (sortColumn === "savings") {
+      const aNum = parseInt(aValue.replace(/[^0-9]/g, ""));
+      const bNum = parseInt(bValue.replace(/[^0-9]/g, ""));
+      if (aNum < bNum) return sortDirection === "asc" ? -1 : 1;
+      if (aNum > bNum) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    }
 
-    if (aStr < bStr) return sortDirection === "asc" ? -1 : 1;
-    if (aStr > bStr) return sortDirection === "asc" ? 1 : -1;
+    // For strings (building, status)
+    if (aValue < bValue)
+      return sortDirection === "asc" ? -1 : 1;
+    if (aValue > bValue)
+      return sortDirection === "asc" ? 1 : -1;
     return 0;
   });
+
+  // Calculate total estimated savings
+  const totalSavings = sortedData.reduce((sum, building) => {
+    const savingsNum = parseInt(
+      building.savings.replace(/[^0-9]/g, ""),
+    );
+    return sum + savingsNum;
+  }, 0);
+
+  // Calculate total cost savings
+  const totalCostSavings = sortedData.reduce(
+    (sum, building) => {
+      const costNum = parseInt(
+        building.costSavings.replace(/[^0-9]/g, ""),
+      );
+      return sum + costNum;
+    },
+    0,
+  );
 
   return (
     <div className="p-8">
       <h2 className="mb-6 text-gray-900">
-        Local Law 84 - Energy Benchmarking
+        Local Law 88 - Lighting Upgrades
       </h2>
 
-      {/* About Local Law 84 Card */}
+      {/* About Local Law 88 - Lighting Card */}
       <Card className="mb-6 border-l-4 border-l-blue-500 bg-blue-50/50 border-blue-200">
         <div className="p-6">
           <div className="flex items-start gap-3">
             <FileText className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm text-gray-600 leading-relaxed">
-                Large NYC buildings (&gt; 25,000 ft²) are required to
-                report their annual energy and water use through the
-                ENERGY STAR Portfolio Manager system. Building owners
-                must gather their utility data each year and submit it
-                to the City by the required deadline.{" "}
+                Buildings (&gt; 25,000 ft²) required by the
+                City’s lighting rules must upgrade outdated
+                lighting so all required areas meet current NYC
+                energy-efficient lighting standards. Building
+                owners need to replace older fixtures and
+                install the necessary lighting controls to
+                comply.{" "}
                 <a
-                  href="https://www.nyc.gov/site/buildings/codes/benchmarking.page"
+                  href="https://www.nyc.gov/site/buildings/codes/ll88-lighting-system-upgrades-sub-meter-installation.page"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 hover:underline"
@@ -316,13 +354,12 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
           );
         })}
       </div>
-
       {/* Building Details Table */}
       <div className="mt-8">
         <Card className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-gray-900">
-              Property List & LL84 Compliance
+              Lighting Upgrade Status by Property
             </h3>
             <div className="flex gap-2">
               <DropdownMenu>
@@ -332,7 +369,8 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                     className="flex items-center gap-2"
                   >
                     <Filter className="w-4 h-4" />
-                    Filter Buildings ({selectedBuildings.length})
+                    Filter Buildings ({selectedBuildings.length}
+                    )
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -368,19 +406,21 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                   {/* Filtered Building List */}
                   <div className="max-h-64 overflow-y-auto">
                     {filteredUniqueBuildings.length > 0 ? (
-                      filteredUniqueBuildings.map((building) => (
-                        <DropdownMenuCheckboxItem
-                          key={building}
-                          checked={selectedBuildings.includes(
-                            building,
-                          )}
-                          onCheckedChange={() =>
-                            toggleBuilding(building)
-                          }
-                        >
-                          {building}
-                        </DropdownMenuCheckboxItem>
-                      ))
+                      filteredUniqueBuildings.map(
+                        (building) => (
+                          <DropdownMenuCheckboxItem
+                            key={building}
+                            checked={selectedBuildings.includes(
+                              building,
+                            )}
+                            onCheckedChange={() =>
+                              toggleBuilding(building)
+                            }
+                          >
+                            {building}
+                          </DropdownMenuCheckboxItem>
+                        ),
+                      )
                     ) : (
                       <div className="p-2 text-sm text-gray-500 text-center">
                         No buildings found
@@ -438,7 +478,9 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                           toggleStatus(status)
                         }
                       >
-                        <Badge className={getStatusColor(status)}>
+                        <Badge
+                          className={getStatusColor(status)}
+                        >
                           {status}
                         </Badge>
                       </DropdownMenuCheckboxItem>
@@ -459,7 +501,6 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
               </DropdownMenu>
             </div>
           </div>
-
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -500,11 +541,11 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                   </TableHead>
                   <TableHead
                     className="cursor-pointer"
-                    onClick={() => handleSort("compliance")}
+                    onClick={() => handleSort("upgradeYear")}
                   >
-                    <div className="flex items-center gap-2 justify-end">
-                      <span>LL84 Compliance Year</span>
-                      {sortColumn === "compliance" ? (
+                    <div className="flex items-center gap-2">
+                      <span>Upgrade Year</span>
+                      {sortColumn === "upgradeYear" ? (
                         sortDirection === "asc" ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
@@ -515,6 +556,26 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                       )}
                     </div>
                   </TableHead>
+                  <TableHead
+                    className="cursor-pointer text-right"
+                    onClick={() => handleSort("savings")}
+                  >
+                    <div className="flex items-center gap-2 justify-end">
+                      <span>Projected Annual Savings</span>
+                      {sortColumn === "savings" ? (
+                        sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        )
+                      ) : (
+                        <ChevronUp className="w-4 h-4 text-gray-300" />
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="text-right">
+                    <span>Annual Cost Savings</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -523,16 +584,46 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                     <TableCell>{building.building}</TableCell>
                     <TableCell>
                       <Badge
-                        className={getStatusColor(building.status)}
+                        className={getStatusColor(
+                          building.status,
+                        )}
                       >
                         {building.status}
                       </Badge>
                     </TableCell>
+                    <TableCell>
+                      {building.upgradeYear}
+                    </TableCell>
                     <TableCell className="text-right">
-                      {building.compliance}
+                      {building.savings}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {building.costSavings}
                     </TableCell>
                   </TableRow>
                 ))}
+                {/* Total Row */}
+                <TableRow className="bg-gray-50 border-t-2">
+                  <TableCell>
+                    <strong>Total</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>-</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>-</strong>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <strong>
+                      {totalSavings.toLocaleString()} kWh/yr
+                    </strong>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <strong>
+                      ${totalCostSavings.toLocaleString()}
+                    </strong>
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </div>
@@ -546,18 +637,18 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
             <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <h4 className="text-gray-900 mb-3">
-                LL84 Compliance Status Reference
+                LL88 Lighting Status Reference
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="flex items-start gap-3">
                   <div className="flex items-center gap-2 min-w-fit">
                     <CheckCircle2 className="w-4 h-4 text-green-600" />
                     <Badge className="bg-green-100 text-green-800">
-                      Compliant
+                      Completed
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Fully met LL84 reporting requirements
+                    Lighting upgrades done, compliant
                   </span>
                 </div>
 
@@ -581,7 +672,7 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    No filing was made
+                    No LL88 lighting project yet
                   </span>
                 </div>
 
@@ -593,7 +684,8 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Filed but after the deadline
+                    Close to deadline or past target date
+                    without completion
                   </span>
                 </div>
 
@@ -605,7 +697,7 @@ export function LocalLaw84({ clientId }: LocalLaw84Props) {
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Building not required to file
+                    Not a covered building / area under LL88
                   </span>
                 </div>
               </div>

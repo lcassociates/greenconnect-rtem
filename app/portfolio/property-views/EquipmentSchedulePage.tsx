@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { Badge } from "../ui/badge";
+import { Button } from "../../components/ui/button";
+import { Card } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from "../../components/ui/table";
 
 interface EquipmentSchedulePageProps {
   buildingName: string;

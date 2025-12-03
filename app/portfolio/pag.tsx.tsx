@@ -1,4 +1,4 @@
-import { Card } from "../ui/card";
+import { Card } from "../../components/ui/card";
 import {
   Building2,
   DollarSign,
@@ -8,7 +8,7 @@ import {
   Clock,
   FolderKanban,
 } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Badge } from "../../components/ui/badge";
 
 interface ClientOverviewPageProps {
   clientId: string;

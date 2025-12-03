@@ -1,4 +1,4 @@
-import { Card } from "../ui/card";
+import { Card } from "../../components/ui/card";
 import { Star, CheckCircle2 } from "lucide-react";
 import {properties, type PropertyItem} from "../../data/properties"
 

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Card } from "../ui/card";
+import { Card } from "../../components/ui/card";
 import {
   LineChart,
   Line,

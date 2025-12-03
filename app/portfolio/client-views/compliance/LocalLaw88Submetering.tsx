@@ -1,31 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "../../ui/card";
+import { Card } from "../../../components/ui/card";
 import {
   Building2,
   CheckCircle2,
-  Activity,
   AlertCircle,
+  Activity,
   Filter,
   Search,
   ChevronUp,
   ChevronDown,
   PlayCircle,
-  Info,
+  XCircle,
   MinusCircle,
+  Info,
   FileText,
   ExternalLink,
 } from "lucide-react";
-import { Badge } from "../../ui/badge";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+import { Badge } from "../../../components/ui/badge";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+} from "../../../components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -33,51 +34,49 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../ui/table";
-import {
-  LL88LightingData,
-  type LL88LightingRow,
-} from "../../../data/ll88Lighting";
+} from "../../../components/ui/table";
 
-export interface LocalLaw88LightingProps {
+import {
+  LL88SubmeteringData,
+  type LL88SubmeteringRow,
+  LL88SubmeteringStatus,
+} from "../../../data/ll88Submetering"; // adjust path if your folder differs
+
+interface LocalLaw88SubmeteringProps {
   clientId: string;
 }
 
-type SortableLL88LightingKey = keyof LL88LightingRow; // "building" | "status" | "compliance"
+type SortableLL88SubmeteringKey = keyof LL88SubmeteringRow
 
-export function LocalLaw88Lighting({
-  clientId,
-}: LocalLaw88LightingProps) {
-  const [selectedBuildings, setSelectedBuildings] = useState<
-    string[]
-  >(LL88LightingData.map((b) => b.building));
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortColumn, setSortColumn] = useState<SortableLL88LightingKey | null>(
-    null,
+
+export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) {
+  const [selectedBuildings, setSelectedBuildings] = useState<string[]>(
+    LL88SubmeteringData.map((b) => b.building),
   );
-  const [sortDirection, setSortDirection] = useState<
-    "asc" | "desc"
-  >("asc");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortColumn, setSortColumn] =
+  useState<SortableLL88SubmeteringKey | null>(null);
+
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   // Status filtering
-  const allStatuses = [
+  const allStatuses: LL88SubmeteringStatus[] = [
     "Completed",
     "In Progress",
     "Not Started",
-    "Exempt",
     "Due",
+    "Exempt",
   ];
   const [selectedStatuses, setSelectedStatuses] =
-    useState<string[]>(allStatuses);
+    useState<LL88SubmeteringStatus[]>(allStatuses);
 
   const uniqueBuildings = Array.from(
-    new Set(LL88LightingData.map((b) => b.building)),
+    new Set(LL88SubmeteringData.map((b) => b.building)),
   );
 
   // Filter buildings based on search term
-  const filteredUniqueBuildings = uniqueBuildings.filter(
-    (building) =>
-      building.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredUniqueBuildings = uniqueBuildings.filter((building) =>
+    building.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const toggleBuilding = (building: string) => {
@@ -96,7 +95,7 @@ export function LocalLaw88Lighting({
     }
   };
 
-  const toggleStatus = (status: string) => {
+  const toggleStatus = (status: LL88SubmeteringStatus) => {
     setSelectedStatuses((prev) =>
       prev.includes(status)
         ? prev.filter((s) => s !== status)
@@ -119,28 +118,16 @@ export function LocalLaw88Lighting({
     setSelectedStatuses(allStatuses);
   };
 
-  const filteredData = LL88LightingData.filter(
-    (b) =>
-      selectedBuildings.includes(b.building) &&
-      selectedStatuses.includes(b.status),
+  const filteredData = LL88SubmeteringData.filter(
+    (b) => selectedBuildings.includes(b.building) && selectedStatuses.includes(b.status),
   );
 
-  const totalBuildings = LL88LightingData.length;
-  const completedBuildings = LL88LightingData.filter(
-    (b) => b.status === "Completed",
-  ).length;
-  const inProgress = LL88LightingData.filter(
-    (b) => b.status === "In Progress",
-  ).length;
-  const notStarted = LL88LightingData.filter(
-    (b) => b.status === "Not Started",
-  ).length;
-  const exempt = LL88LightingData.filter(
-    (b) => b.status === "Exempt",
-  ).length;
-  const atRisk = LL88LightingData.filter(
-    (b) => b.status === "Due",
-  ).length;
+  const totalBuildings = LL88SubmeteringData.length;
+  const completed = LL88SubmeteringData.filter((b) => b.status === "Completed").length;
+  const inProgress = LL88SubmeteringData.filter((b) => b.status === "In Progress").length;
+  const notStarted = LL88SubmeteringData.filter((b) => b.status === "Not Started").length;
+  const behindSchedule = LL88SubmeteringData.filter((b) => b.status === "Due").length;
+  const exempt = LL88SubmeteringData.filter((b) => b.status === "Exempt").length;
 
   const stats = [
     {
@@ -148,56 +135,54 @@ export function LocalLaw88Lighting({
       value: totalBuildings.toString(),
       icon: Building2,
       color: "text-blue-600",
-      status: "all",
+      status: "all" as const,
     },
     {
       label: "Completed",
-      value: completedBuildings.toString(),
+      value: completed.toString(),
       icon: CheckCircle2,
       color: "text-green-600",
-      status: "Completed",
+      status: "Completed" as LL88SubmeteringStatus,
     },
     {
       label: "In Progress",
       value: inProgress.toString(),
       icon: Activity,
       color: "text-blue-600",
-      status: "In Progress",
+      status: "In Progress" as LL88SubmeteringStatus,
     },
     {
       label: "Not Started",
       value: notStarted.toString(),
       icon: PlayCircle,
       color: "text-orange-600",
-      status: "Not Started",
+      status: "Not Started" as LL88SubmeteringStatus,
     },
     {
       label: "Due",
-      value: atRisk.toString(),
-      icon: AlertCircle,
+      value: behindSchedule.toString(),
+      icon: XCircle,
       color: "text-red-600",
-      status: "Due",
+      status: "Due" as LL88SubmeteringStatus,
     },
     {
       label: "Exempt",
       value: exempt.toString(),
       icon: MinusCircle,
       color: "text-gray-600",
-      status: "Exempt",
+      status: "Exempt" as LL88SubmeteringStatus,
     },
   ];
 
-  const handleCardClick = (status: string) => {
+  const handleCardClick = (status: LL88SubmeteringStatus | "all") => {
     if (status === "all") {
-      // Show all statuses
       setSelectedStatuses(allStatuses);
     } else {
-      // Filter to show only this status
       setSelectedStatuses([status]);
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: LL88SubmeteringStatus) => {
     switch (status) {
       case "Completed":
         return "bg-green-100 text-green-800";
@@ -205,20 +190,17 @@ export function LocalLaw88Lighting({
         return "bg-blue-100 text-blue-800";
       case "Not Started":
         return "bg-orange-100 text-orange-800";
-      case "Exempt":
-        return "bg-gray-100 text-gray-800";
       case "Due":
         return "bg-red-100 text-red-800";
+      case "Exempt":
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
-  const handleSort = (column: SortableLL88LightingKey) => {
+  const handleSort = (column: SortableLL88SubmeteringKey) => {
     if (sortColumn === column) {
-      setSortDirection(
-        sortDirection === "asc" ? "desc" : "asc",
-      );
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortColumn(column);
       setSortDirection("asc");
@@ -228,75 +210,55 @@ export function LocalLaw88Lighting({
   const sortedData = [...filteredData].sort((a, b) => {
     if (!sortColumn) return 0;
 
-    // Handle different data types
-    let aValue: any = a[sortColumn];
-    let bValue: any = b[sortColumn];
+    const column: SortableLL88SubmeteringKey = sortColumn;
+    const aValue = a[column];
+    const bValue = b[column];
 
-    // For numeric comparisons
-    if (sortColumn === "upgradeYear") {
-      if (aValue < bValue)
-        return sortDirection === "asc" ? -1 : 1;
-      if (aValue > bValue)
-        return sortDirection === "asc" ? 1 : -1;
-      return 0;
-    }
+    // Numeric fields
+    if (column === "installationYear" || column === "meterCount" || column === "tenants") {
+      const aNum = aValue as number;
+      const bNum = bValue as number;
 
-    // For savings (string with commas and units)
-    if (sortColumn === "savings") {
-      const aNum = parseInt(aValue.replace(/[^0-9]/g, ""));
-      const bNum = parseInt(bValue.replace(/[^0-9]/g, ""));
       if (aNum < bNum) return sortDirection === "asc" ? -1 : 1;
       if (aNum > bNum) return sortDirection === "asc" ? 1 : -1;
       return 0;
     }
 
-    // For strings (building, status)
-    if (aValue < bValue)
-      return sortDirection === "asc" ? -1 : 1;
-    if (aValue > bValue)
-      return sortDirection === "asc" ? 1 : -1;
+    // String fields (building, status)
+    const aStr = String(aValue);
+    const bStr = String(bValue);
+
+    if (aStr < bStr) return sortDirection === "asc" ? -1 : 1;
+    if (aStr > bStr) return sortDirection === "asc" ? 1 : -1;
     return 0;
   });
 
-  // Calculate total estimated savings
-  const totalSavings = sortedData.reduce((sum, building) => {
-    const savingsNum = parseInt(
-      building.savings.replace(/[^0-9]/g, ""),
-    );
-    return sum + savingsNum;
-  }, 0);
 
-  // Calculate total cost savings
-  const totalCostSavings = sortedData.reduce(
-    (sum, building) => {
-      const costNum = parseInt(
-        building.costSavings.replace(/[^0-9]/g, ""),
-      );
-      return sum + costNum;
-    },
+  // Calculate totals
+  const totalMeterCount = sortedData.reduce(
+    (sum, building) => sum + building.meterCount,
+    0,
+  );
+  const totalTenants = sortedData.reduce(
+    (sum, building) => sum + building.tenants,
     0,
   );
 
   return (
     <div className="p-8">
-      <h2 className="mb-6 text-gray-900">
-        Local Law 88 - Lighting Upgrades
-      </h2>
+      <h2 className="mb-6 text-gray-900">Local Law 88 - Submetering</h2>
 
-      {/* About Local Law 88 - Lighting Card */}
+      {/* About Local Law 88 - Submetering Card */}
       <Card className="mb-6 border-l-4 border-l-blue-500 bg-blue-50/50 border-blue-200">
         <div className="p-6">
           <div className="flex items-start gap-3">
             <FileText className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm text-gray-600 leading-relaxed">
-                Buildings (&gt; 25,000 ft²) required by the
-                City’s lighting rules must upgrade outdated
-                lighting so all required areas meet current NYC
-                energy-efficient lighting standards. Building
-                owners need to replace older fixtures and
-                install the necessary lighting controls to
-                comply.{" "}
+                Electrical submeters are required in large non-residential tenant
+                spaces (&gt; 5,000 ft²) within covered buildings. Building owners
+                must ensure each covered space has a working submeter and provide
+                regular energy-use statements to tenants.{" "}
                 <a
                   href="https://www.nyc.gov/site/buildings/codes/ll88-lighting-system-upgrades-sub-meter-installation.page"
                   target="_blank"
@@ -326,12 +288,11 @@ export function LocalLaw88Lighting({
           };
           const bgColor = bgColorMap[stat.color] || "bg-white";
 
-          // Check if this card's status is currently selected
           const isActive =
             stat.status === "all"
               ? selectedStatuses.length === allStatuses.length
               : selectedStatuses.length === 1 &&
-                selectedStatuses.includes(stat.status);
+                selectedStatuses.includes(stat.status as LL88SubmeteringStatus);
 
           return (
             <Card
@@ -339,13 +300,11 @@ export function LocalLaw88Lighting({
               className={`p-6 ${bgColor} cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 hover:-translate-y-1 ${
                 isActive ? "ring-2 ring-blue-500 shadow-lg" : ""
               }`}
-              onClick={() => handleCardClick(stat.status)}
+              onClick={() => handleCardClick(stat.status as any)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-2">
-                    {stat.label}
-                  </p>
+                  <p className="text-sm text-gray-600 mb-2">{stat.label}</p>
                   <p className="text-gray-900">{stat.value}</p>
                 </div>
                 <Icon className={`w-8 h-8 ${stat.color}`} />
@@ -354,29 +313,21 @@ export function LocalLaw88Lighting({
           );
         })}
       </div>
+
       {/* Building Details Table */}
       <div className="mt-8">
         <Card className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-gray-900">
-              Lighting Upgrade Status by Property
-            </h3>
+            <h3 className="text-gray-900">Submetering Status by Property</h3>
             <div className="flex gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2"
-                  >
+                  <Button variant="outline" className="flex items-center gap-2">
                     <Filter className="w-4 h-4" />
-                    Filter Buildings ({selectedBuildings.length}
-                    )
+                    Filter Buildings ({selectedBuildings.length})
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-64"
-                >
+                <DropdownMenuContent align="end" className="w-64">
                   {/* Search Input */}
                   <div className="p-2 border-b">
                     <div className="relative">
@@ -384,9 +335,7 @@ export function LocalLaw88Lighting({
                       <Input
                         placeholder="Search buildings..."
                         value={searchTerm}
-                        onChange={(e) =>
-                          setSearchTerm(e.target.value)
-                        }
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-8"
                       />
                     </div>
@@ -394,10 +343,7 @@ export function LocalLaw88Lighting({
 
                   {/* Select All Checkbox */}
                   <DropdownMenuCheckboxItem
-                    checked={
-                      selectedBuildings.length ===
-                      uniqueBuildings.length
-                    }
+                    checked={selectedBuildings.length === uniqueBuildings.length}
                     onCheckedChange={toggleAll}
                   >
                     All Buildings
@@ -406,21 +352,15 @@ export function LocalLaw88Lighting({
                   {/* Filtered Building List */}
                   <div className="max-h-64 overflow-y-auto">
                     {filteredUniqueBuildings.length > 0 ? (
-                      filteredUniqueBuildings.map(
-                        (building) => (
-                          <DropdownMenuCheckboxItem
-                            key={building}
-                            checked={selectedBuildings.includes(
-                              building,
-                            )}
-                            onCheckedChange={() =>
-                              toggleBuilding(building)
-                            }
-                          >
-                            {building}
-                          </DropdownMenuCheckboxItem>
-                        ),
-                      )
+                      filteredUniqueBuildings.map((building) => (
+                        <DropdownMenuCheckboxItem
+                          key={building}
+                          checked={selectedBuildings.includes(building)}
+                          onCheckedChange={() => toggleBuilding(building)}
+                        >
+                          {building}
+                        </DropdownMenuCheckboxItem>
+                      ))
                     ) : (
                       <div className="p-2 text-sm text-gray-500 text-center">
                         No buildings found
@@ -443,24 +383,15 @@ export function LocalLaw88Lighting({
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2"
-                  >
+                  <Button variant="outline" className="flex items-center gap-2">
                     <Filter className="w-4 h-4" />
                     Filter Status ({selectedStatuses.length})
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-56"
-                >
+                <DropdownMenuContent align="end" className="w-56">
                   {/* Select All Statuses Checkbox */}
                   <DropdownMenuCheckboxItem
-                    checked={
-                      selectedStatuses.length ===
-                      allStatuses.length
-                    }
+                    checked={selectedStatuses.length === allStatuses.length}
                     onCheckedChange={toggleAllStatuses}
                   >
                     All Statuses
@@ -471,16 +402,10 @@ export function LocalLaw88Lighting({
                     {allStatuses.map((status) => (
                       <DropdownMenuCheckboxItem
                         key={status}
-                        checked={selectedStatuses.includes(
-                          status,
-                        )}
-                        onCheckedChange={() =>
-                          toggleStatus(status)
-                        }
+                        checked={selectedStatuses.includes(status)}
+                        onCheckedChange={() => toggleStatus(status)}
                       >
-                        <Badge
-                          className={getStatusColor(status)}
-                        >
+                        <Badge className={getStatusColor(status)}>
                           {status}
                         </Badge>
                       </DropdownMenuCheckboxItem>
@@ -501,6 +426,7 @@ export function LocalLaw88Lighting({
               </DropdownMenu>
             </div>
           </div>
+
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -541,11 +467,11 @@ export function LocalLaw88Lighting({
                   </TableHead>
                   <TableHead
                     className="cursor-pointer"
-                    onClick={() => handleSort("upgradeYear")}
+                    onClick={() => handleSort("installationYear")}
                   >
                     <div className="flex items-center gap-2">
-                      <span>Upgrade Year</span>
-                      {sortColumn === "upgradeYear" ? (
+                      <span>Installation Year</span>
+                      {sortColumn === "installationYear" ? (
                         sortDirection === "asc" ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
@@ -558,11 +484,11 @@ export function LocalLaw88Lighting({
                   </TableHead>
                   <TableHead
                     className="cursor-pointer text-right"
-                    onClick={() => handleSort("savings")}
+                    onClick={() => handleSort("tenants")}
                   >
                     <div className="flex items-center gap-2 justify-end">
-                      <span>Projected Annual Savings</span>
-                      {sortColumn === "savings" ? (
+                      <span># of Tenants</span>
+                      {sortColumn === "tenants" ? (
                         sortDirection === "asc" ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
@@ -573,8 +499,22 @@ export function LocalLaw88Lighting({
                       )}
                     </div>
                   </TableHead>
-                  <TableHead className="text-right">
-                    <span>Annual Cost Savings</span>
+                  <TableHead
+                    className="cursor-pointer text-right"
+                    onClick={() => handleSort("meterCount")}
+                  >
+                    <div className="flex items-center gap-2 justify-end">
+                      <span>Meter Count</span>
+                      {sortColumn === "meterCount" ? (
+                        sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        )
+                      ) : (
+                        <ChevronUp className="w-4 h-4 text-gray-300" />
+                      )}
+                    </div>
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -583,22 +523,16 @@ export function LocalLaw88Lighting({
                   <TableRow key={idx}>
                     <TableCell>{building.building}</TableCell>
                     <TableCell>
-                      <Badge
-                        className={getStatusColor(
-                          building.status,
-                        )}
-                      >
+                      <Badge className={getStatusColor(building.status)}>
                         {building.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      {building.upgradeYear}
+                    <TableCell>{building.installationYear}</TableCell>
+                    <TableCell className="text-right">
+                      {building.tenants}
                     </TableCell>
                     <TableCell className="text-right">
-                      {building.savings}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {building.costSavings}
+                      {building.meterCount}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -614,14 +548,10 @@ export function LocalLaw88Lighting({
                     <strong>-</strong>
                   </TableCell>
                   <TableCell className="text-right">
-                    <strong>
-                      {totalSavings.toLocaleString()} kWh/yr
-                    </strong>
+                    <strong>{totalTenants}</strong>
                   </TableCell>
                   <TableCell className="text-right">
-                    <strong>
-                      ${totalCostSavings.toLocaleString()}
-                    </strong>
+                    <strong>{totalMeterCount}</strong>
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -637,7 +567,7 @@ export function LocalLaw88Lighting({
             <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <h4 className="text-gray-900 mb-3">
-                LL88 Lighting Status Reference
+                LL88 Submetering Status Reference
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="flex items-start gap-3">
@@ -648,7 +578,7 @@ export function LocalLaw88Lighting({
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Lighting upgrades done, compliant
+                    All required submeters installed &amp; reporting
                   </span>
                 </div>
 
@@ -660,7 +590,7 @@ export function LocalLaw88Lighting({
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Work started but not fully complete
+                    Some work done, not all spaces submetered
                   </span>
                 </div>
 
@@ -672,7 +602,7 @@ export function LocalLaw88Lighting({
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    No LL88 lighting project yet
+                    No submetering activity yet
                   </span>
                 </div>
 
@@ -684,8 +614,7 @@ export function LocalLaw88Lighting({
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Close to deadline or past target date
-                    without completion
+                    Close to deadline or past target date without completion
                   </span>
                 </div>
 
@@ -697,7 +626,7 @@ export function LocalLaw88Lighting({
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Not a covered building / area under LL88
+                    Does not meet LL88 submetering criteria
                   </span>
                 </div>
               </div>

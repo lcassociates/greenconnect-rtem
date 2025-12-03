@@ -1,32 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "../../ui/card";
+import { Card } from "../../../components/ui/card";
 import {
   Building2,
   CheckCircle2,
   AlertCircle,
   Activity,
+  FileText,
   Filter,
   Search,
   ChevronUp,
   ChevronDown,
-  PlayCircle,
-  XCircle,
-  MinusCircle,
   Info,
-  FileText,
+  PlayCircle,
+  MinusCircle,
   ExternalLink,
 } from "lucide-react";
-import { Badge } from "../../ui/badge";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+import { Badge } from "../../../components/ui/badge";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+} from "../../../components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -34,44 +33,41 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../ui/table";
+} from "../../../components/ui/table";
+import { LL84Data, type LL84Row } from "../../../data/ll84";
 
-import {
-  LL88SubmeteringData,
-  type LL88SubmeteringRow,
-  LL88SubmeteringStatus,
-} from "../../../data/ll88Submetering"; // adjust path if your folder differs
+type SortableLL84Key = keyof LL84Row; // "building" | "status" | "compliance"
 
-interface LocalLaw88SubmeteringProps {
+export interface LocalLaw84Props {
   clientId: string;
 }
 
-type SortableLL88SubmeteringKey = keyof LL88SubmeteringRow
-
-
-export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) {
+export function LocalLaw84({ clientId }: LocalLaw84Props) {
   const [selectedBuildings, setSelectedBuildings] = useState<string[]>(
-    LL88SubmeteringData.map((b) => b.building),
+    LL84Data.map((b) => b.building),
   );
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortColumn, setSortColumn] =
-  useState<SortableLL88SubmeteringKey | null>(null);
-
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortColumn, setSortColumn] = useState<SortableLL84Key | null>(
+    null,
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">(
+    "asc",
+  );
 
   // Status filtering
-  const allStatuses: LL88SubmeteringStatus[] = [
-    "Completed",
+  const allStatuses = [
+    "Compliant",
     "In Progress",
     "Not Started",
     "Due",
     "Exempt",
   ];
+  
   const [selectedStatuses, setSelectedStatuses] =
-    useState<LL88SubmeteringStatus[]>(allStatuses);
+    useState<string[]>(allStatuses);
 
   const uniqueBuildings = Array.from(
-    new Set(LL88SubmeteringData.map((b) => b.building)),
+    new Set(LL84Data.map((b) => b.building)),
   );
 
   // Filter buildings based on search term
@@ -95,7 +91,7 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
     }
   };
 
-  const toggleStatus = (status: LL88SubmeteringStatus) => {
+  const toggleStatus = (status: string) => {
     setSelectedStatuses((prev) =>
       prev.includes(status)
         ? prev.filter((s) => s !== status)
@@ -118,16 +114,29 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
     setSelectedStatuses(allStatuses);
   };
 
-  const filteredData = LL88SubmeteringData.filter(
-    (b) => selectedBuildings.includes(b.building) && selectedStatuses.includes(b.status),
+  const filteredData = LL84Data.filter(
+    (b) =>
+      selectedBuildings.includes(b.building) &&
+      selectedStatuses.includes(b.status),
   );
 
-  const totalBuildings = LL88SubmeteringData.length;
-  const completed = LL88SubmeteringData.filter((b) => b.status === "Completed").length;
-  const inProgress = LL88SubmeteringData.filter((b) => b.status === "In Progress").length;
-  const notStarted = LL88SubmeteringData.filter((b) => b.status === "Not Started").length;
-  const behindSchedule = LL88SubmeteringData.filter((b) => b.status === "Due").length;
-  const exempt = LL88SubmeteringData.filter((b) => b.status === "Exempt").length;
+  // Calculate stats from the full dataset (not filtered)
+  const totalBuildings = LL84Data.length;
+  const compliantBuildings = LL84Data.filter(
+    (b) => b.status === "Compliant",
+  ).length;
+  const inProgressBuildings = LL84Data.filter(
+    (b) => b.status === "In Progress",
+  ).length;
+  const lateBuildings = LL84Data.filter(
+    (b) => b.status === "Due",
+  ).length;
+  const notSubmitted = LL84Data.filter(
+    (b) => b.status === "Not Started",
+  ).length;
+  const exempt = LL84Data.filter(
+    (b) => b.status === "Exempt",
+  ).length;
 
   const stats = [
     {
@@ -135,70 +144,73 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
       value: totalBuildings.toString(),
       icon: Building2,
       color: "text-blue-600",
-      status: "all" as const,
+      status: "all",
     },
     {
-      label: "Completed",
-      value: completed.toString(),
+      label: "Compliant",
+      value: compliantBuildings.toString(),
       icon: CheckCircle2,
       color: "text-green-600",
-      status: "Completed" as LL88SubmeteringStatus,
+      status: "Compliant",
     },
     {
       label: "In Progress",
-      value: inProgress.toString(),
+      value: inProgressBuildings.toString(),
       icon: Activity,
       color: "text-blue-600",
-      status: "In Progress" as LL88SubmeteringStatus,
+      status: "In Progress",
     },
     {
       label: "Not Started",
-      value: notStarted.toString(),
+      value: notSubmitted.toString(),
       icon: PlayCircle,
       color: "text-orange-600",
-      status: "Not Started" as LL88SubmeteringStatus,
+      status: "Not Started",
     },
     {
       label: "Due",
-      value: behindSchedule.toString(),
-      icon: XCircle,
+      value: lateBuildings.toString(),
+      icon: AlertCircle,
       color: "text-red-600",
-      status: "Due" as LL88SubmeteringStatus,
+      status: "Due",
     },
     {
       label: "Exempt",
       value: exempt.toString(),
       icon: MinusCircle,
       color: "text-gray-600",
-      status: "Exempt" as LL88SubmeteringStatus,
+      status: "Exempt",
     },
   ];
 
-  const handleCardClick = (status: LL88SubmeteringStatus | "all") => {
-    if (status === "all") {
-      setSelectedStatuses(allStatuses);
-    } else {
-      setSelectedStatuses([status]);
-    }
-  };
-
-  const getStatusColor = (status: LL88SubmeteringStatus) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case "Completed":
+      case "Compliant":
         return "bg-green-100 text-green-800";
       case "In Progress":
         return "bg-blue-100 text-blue-800";
-      case "Not Started":
-        return "bg-orange-100 text-orange-800";
       case "Due":
         return "bg-red-100 text-red-800";
+      case "Not Started":
+        return "bg-orange-100 text-orange-800";
       case "Exempt":
+        return "bg-gray-100 text-gray-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
-  const handleSort = (column: SortableLL88SubmeteringKey) => {
+  const handleCardClick = (status: string) => {
+    if (status === "all") {
+      // Show all statuses
+      setSelectedStatuses(allStatuses);
+    } else {
+      // Filter to show only this status
+      setSelectedStatuses([status]);
+    }
+  };
+
+  const handleSort = (column: SortableLL84Key) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -210,57 +222,45 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
   const sortedData = [...filteredData].sort((a, b) => {
     if (!sortColumn) return 0;
 
-    const column: SortableLL88SubmeteringKey = sortColumn;
-    const aValue = a[column];
-    const bValue = b[column];
+    const aVal = a[sortColumn];
+    const bVal = b[sortColumn];
 
-    // Numeric fields
-    if (column === "installationYear" || column === "meterCount" || column === "tenants") {
-      const aNum = aValue as number;
-      const bNum = bValue as number;
-
-      if (aNum < bNum) return sortDirection === "asc" ? -1 : 1;
-      if (aNum > bNum) return sortDirection === "asc" ? 1 : -1;
-      return 0;
+    // numeric column
+    if (sortColumn === "compliance") {
+      const aNum = aVal as number;
+      const bNum = bVal as number;
+      return sortDirection === "asc" ? aNum - bNum : bNum - aNum;
     }
 
-    // String fields (building, status)
-    const aStr = String(aValue);
-    const bStr = String(bValue);
+    // string columns (building, status)
+    const aStr = String(aVal);
+    const bStr = String(bVal);
 
     if (aStr < bStr) return sortDirection === "asc" ? -1 : 1;
     if (aStr > bStr) return sortDirection === "asc" ? 1 : -1;
     return 0;
   });
 
-
-  // Calculate totals
-  const totalMeterCount = sortedData.reduce(
-    (sum, building) => sum + building.meterCount,
-    0,
-  );
-  const totalTenants = sortedData.reduce(
-    (sum, building) => sum + building.tenants,
-    0,
-  );
-
   return (
     <div className="p-8">
-      <h2 className="mb-6 text-gray-900">Local Law 88 - Submetering</h2>
+      <h2 className="mb-6 text-gray-900">
+        Local Law 84 - Energy Benchmarking
+      </h2>
 
-      {/* About Local Law 88 - Submetering Card */}
+      {/* About Local Law 84 Card */}
       <Card className="mb-6 border-l-4 border-l-blue-500 bg-blue-50/50 border-blue-200">
         <div className="p-6">
           <div className="flex items-start gap-3">
             <FileText className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm text-gray-600 leading-relaxed">
-                Electrical submeters are required in large non-residential tenant
-                spaces (&gt; 5,000 ft²) within covered buildings. Building owners
-                must ensure each covered space has a working submeter and provide
-                regular energy-use statements to tenants.{" "}
+                Large NYC buildings (&gt; 25,000 ft²) are required to
+                report their annual energy and water use through the
+                ENERGY STAR Portfolio Manager system. Building owners
+                must gather their utility data each year and submit it
+                to the City by the required deadline.{" "}
                 <a
-                  href="https://www.nyc.gov/site/buildings/codes/ll88-lighting-system-upgrades-sub-meter-installation.page"
+                  href="https://www.nyc.gov/site/buildings/codes/benchmarking.page"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 hover:underline"
@@ -288,11 +288,12 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
           };
           const bgColor = bgColorMap[stat.color] || "bg-white";
 
+          // Check if this card's status is currently selected
           const isActive =
             stat.status === "all"
               ? selectedStatuses.length === allStatuses.length
               : selectedStatuses.length === 1 &&
-                selectedStatuses.includes(stat.status as LL88SubmeteringStatus);
+                selectedStatuses.includes(stat.status);
 
           return (
             <Card
@@ -300,11 +301,13 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
               className={`p-6 ${bgColor} cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 hover:-translate-y-1 ${
                 isActive ? "ring-2 ring-blue-500 shadow-lg" : ""
               }`}
-              onClick={() => handleCardClick(stat.status as any)}
+              onClick={() => handleCardClick(stat.status)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-2">{stat.label}</p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {stat.label}
+                  </p>
                   <p className="text-gray-900">{stat.value}</p>
                 </div>
                 <Icon className={`w-8 h-8 ${stat.color}`} />
@@ -318,16 +321,24 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
       <div className="mt-8">
         <Card className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-gray-900">Submetering Status by Property</h3>
+            <h3 className="text-gray-900">
+              Property List & LL84 Compliance
+            </h3>
             <div className="flex gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
                     <Filter className="w-4 h-4" />
                     Filter Buildings ({selectedBuildings.length})
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-64"
+                >
                   {/* Search Input */}
                   <div className="p-2 border-b">
                     <div className="relative">
@@ -335,7 +346,9 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                       <Input
                         placeholder="Search buildings..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) =>
+                          setSearchTerm(e.target.value)
+                        }
                         className="pl-8"
                       />
                     </div>
@@ -343,7 +356,10 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
 
                   {/* Select All Checkbox */}
                   <DropdownMenuCheckboxItem
-                    checked={selectedBuildings.length === uniqueBuildings.length}
+                    checked={
+                      selectedBuildings.length ===
+                      uniqueBuildings.length
+                    }
                     onCheckedChange={toggleAll}
                   >
                     All Buildings
@@ -355,8 +371,12 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                       filteredUniqueBuildings.map((building) => (
                         <DropdownMenuCheckboxItem
                           key={building}
-                          checked={selectedBuildings.includes(building)}
-                          onCheckedChange={() => toggleBuilding(building)}
+                          checked={selectedBuildings.includes(
+                            building,
+                          )}
+                          onCheckedChange={() =>
+                            toggleBuilding(building)
+                          }
                         >
                           {building}
                         </DropdownMenuCheckboxItem>
@@ -383,15 +403,24 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
                     <Filter className="w-4 h-4" />
                     Filter Status ({selectedStatuses.length})
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56"
+                >
                   {/* Select All Statuses Checkbox */}
                   <DropdownMenuCheckboxItem
-                    checked={selectedStatuses.length === allStatuses.length}
+                    checked={
+                      selectedStatuses.length ===
+                      allStatuses.length
+                    }
                     onCheckedChange={toggleAllStatuses}
                   >
                     All Statuses
@@ -402,8 +431,12 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                     {allStatuses.map((status) => (
                       <DropdownMenuCheckboxItem
                         key={status}
-                        checked={selectedStatuses.includes(status)}
-                        onCheckedChange={() => toggleStatus(status)}
+                        checked={selectedStatuses.includes(
+                          status,
+                        )}
+                        onCheckedChange={() =>
+                          toggleStatus(status)
+                        }
                       >
                         <Badge className={getStatusColor(status)}>
                           {status}
@@ -467,45 +500,11 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                   </TableHead>
                   <TableHead
                     className="cursor-pointer"
-                    onClick={() => handleSort("installationYear")}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span>Installation Year</span>
-                      {sortColumn === "installationYear" ? (
-                        sortDirection === "asc" ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )
-                      ) : (
-                        <ChevronUp className="w-4 h-4 text-gray-300" />
-                      )}
-                    </div>
-                  </TableHead>
-                  <TableHead
-                    className="cursor-pointer text-right"
-                    onClick={() => handleSort("tenants")}
+                    onClick={() => handleSort("compliance")}
                   >
                     <div className="flex items-center gap-2 justify-end">
-                      <span># of Tenants</span>
-                      {sortColumn === "tenants" ? (
-                        sortDirection === "asc" ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )
-                      ) : (
-                        <ChevronUp className="w-4 h-4 text-gray-300" />
-                      )}
-                    </div>
-                  </TableHead>
-                  <TableHead
-                    className="cursor-pointer text-right"
-                    onClick={() => handleSort("meterCount")}
-                  >
-                    <div className="flex items-center gap-2 justify-end">
-                      <span>Meter Count</span>
-                      {sortColumn === "meterCount" ? (
+                      <span>LL84 Compliance Year</span>
+                      {sortColumn === "compliance" ? (
                         sortDirection === "asc" ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
@@ -523,37 +522,17 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                   <TableRow key={idx}>
                     <TableCell>{building.building}</TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(building.status)}>
+                      <Badge
+                        className={getStatusColor(building.status)}
+                      >
                         {building.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>{building.installationYear}</TableCell>
                     <TableCell className="text-right">
-                      {building.tenants}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {building.meterCount}
+                      {building.compliance}
                     </TableCell>
                   </TableRow>
                 ))}
-                {/* Total Row */}
-                <TableRow className="bg-gray-50 border-t-2">
-                  <TableCell>
-                    <strong>Total</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>-</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>-</strong>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <strong>{totalTenants}</strong>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <strong>{totalMeterCount}</strong>
-                  </TableCell>
-                </TableRow>
               </TableBody>
             </Table>
           </div>
@@ -567,18 +546,18 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
             <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <h4 className="text-gray-900 mb-3">
-                LL88 Submetering Status Reference
+                LL84 Compliance Status Reference
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="flex items-start gap-3">
                   <div className="flex items-center gap-2 min-w-fit">
                     <CheckCircle2 className="w-4 h-4 text-green-600" />
                     <Badge className="bg-green-100 text-green-800">
-                      Completed
+                      Compliant
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    All required submeters installed &amp; reporting
+                    Fully met LL84 reporting requirements
                   </span>
                 </div>
 
@@ -590,7 +569,7 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Some work done, not all spaces submetered
+                    Work started but not fully complete
                   </span>
                 </div>
 
@@ -602,7 +581,7 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    No submetering activity yet
+                    No filing was made
                   </span>
                 </div>
 
@@ -614,7 +593,7 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Close to deadline or past target date without completion
+                    Filed but after the deadline
                   </span>
                 </div>
 
@@ -626,7 +605,7 @@ export function LocalLaw88Submetering({ clientId }: LocalLaw88SubmeteringProps) 
                     </Badge>
                   </div>
                   <span className="text-sm text-gray-600">
-                    Does not meet LL88 submetering criteria
+                    Building not required to file
                   </span>
                 </div>
               </div>

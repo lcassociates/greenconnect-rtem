@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "../../ui/card";
+import { Card } from "../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -9,15 +9,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../ui/table";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+} from "../../../components/ui/table";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+} from "../../../components/ui/dropdown-menu";
 import {
   Building2,
   DollarSign,
