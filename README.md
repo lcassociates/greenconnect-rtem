@@ -22,17 +22,31 @@ GreenConnect RTEM is a Next.js and Tailwind CSS dashboard with a Node.js backend
 ## PROJECT STRUCTURE
 
 greenconnect-rtem/
-
-- app/ (Next.js frontend)
-- public/ (static assets)
-- backend/
-  - src/
-    - cwb/ (ControlByWeb API client and auth)
-    - db/ (Postgres pool and migrations)
-    - jobs/ (ingestion jobs)
-    - utils/ (CSV helpers)
-  - .env (environment variables)
-  - .env.example
+│
+├── app/ # Next.js frontend
+│ ├── components/
+│ ├── data/
+│ ├── layout.tsx
+│ ├── page.tsx
+│ └── globals.css
+│
+├── public/
+│ └── images/
+│
+├── backend/ # Backend ingestion service
+│ ├── src/
+│ │ ├── cwb/ # ControlByWeb API
+│ │ ├── db/ # Postgres DB
+│ │ ├── jobs/
+│ │ │ └── ingestDeviceLogs.js
+│ │ └── utils/ # JSON Data
+│ ├── .env # Backend environment variables
+│ ├── .env.example
+│ └── package.json
+│
+├── postcss.config.js
+├── tailwind.config.js
+└── README.md
 
 ## Setup Instructions
 
@@ -52,8 +66,6 @@ Make sure you have the following installed in `package.json`:
   "autoprefixer": "^10.4.0"
 }
 ```
-
----
 
 ### 2. Tailwind Setup
 
@@ -106,13 +118,11 @@ All building images are placed in the `public/images/` folder. You can reference
 
 ---
 
-## 🔧 Run the App
+## Run the App
 
-```
 ### Frontend:
-Run npm install and npm run dev to start the application at http://localhost:3000.
 
-```
+Run npm install and npm run dev to start the application at http://localhost:3000.
 
 ### Backend:
 
@@ -120,19 +130,23 @@ Create backend/.env with the required environment variables for ControlByWeb and
 
 #### CONTROLBYWEB ENVIRONMENT VARIABLES
 
+```
 CWB_BASE_URL=https://api.controlbyweb.cloud/api
 CWB_USERNAME=your_controlbyweb_username
 CWB_PASSWORD=your_controlbyweb_password
 CWB_ACCOUNT_ID=your_account_id
+```
 
 #### POSTGRESQL ENVIRONMENT VARIABLES
 
+```
 PGHOST=your_db_host
 PGPORT=5432
 PGUSER=your_db_user
 PGPASSWORD=your_db_password
 PGDATABASE=your_db_name
 PGSSLMODE=require
+```
 
 #### BACKEND INGESTION FLOW
 
@@ -143,19 +157,17 @@ PGSSLMODE=require
 5. Parse and store logs in PostgreSQL
 6. Safe re-runs using database constraints
 
-#### SCHEDULING
+---
+
+## SCHEDULING
 
 The ingestion job is designed to run every 15 minutes using cron or a cloud scheduler.
-
----
 
 ## SECURITY NOTES
 
 - Environment files are gitignored
 - No secrets are committed to source control
 - Frontend never calls ControlByWeb APIs directly
-
----
 
 ## Final UI Example
 
