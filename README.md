@@ -36,7 +36,7 @@ greenconnect-rtem/
 │
 ├── backend/ # Backend ingestion service
 │ ├── src/
-│ │ ├── cwb/ # ControlByWeb API
+│ │ ├── cbw/ # ControlByWeb API
 │ │ ├── db/ # Postgres DB
 │ │ ├── jobs/
 │ │ │ └── ingestDeviceLogs.js
