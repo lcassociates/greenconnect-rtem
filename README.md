@@ -190,4 +190,4 @@ The ingestion job is designed to run every 15 minutes using cron or a cloud sche
 
 ---
 
-## © 2025 LC Associates - GreenConnect RTEM#
+© 2025 LC Associates - GreenConnect RTEM#
