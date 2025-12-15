@@ -21,6 +21,7 @@ GreenConnect RTEM is a Next.js and Tailwind CSS dashboard with a Node.js backend
 
 ## PROJECT STRUCTURE
 
+```markdown
 greenconnect-rtem/
 │
 ├── app/ # Next.js frontend
@@ -47,6 +48,7 @@ greenconnect-rtem/
 ├── postcss.config.js
 ├── tailwind.config.js
 └── README.md
+```
 
 ## Setup Instructions
 
