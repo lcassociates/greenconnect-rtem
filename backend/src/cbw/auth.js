@@ -23,7 +23,7 @@ function normalizeTokenResponse(data) {
   };
 }
 
-export async function loginWithPassword({ baseUrl, username, password }) {
+export async function getAuthTokenWithPassword({ baseUrl, username, password }) {
   const url = `${baseUrl}/v1/auth/token`;
 
   const { data } = await axios.post(
