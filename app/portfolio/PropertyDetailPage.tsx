@@ -7,7 +7,6 @@ import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import {
   subMeteringData,
-  buildingData,
   activeProjectsData,
   dobComplianceData,
   energyProcurementData,
@@ -32,7 +31,7 @@ type ViewType =
   | "energy-procurement"
   | "equipment-schedules";
 
-
+  
 export function PropertyDetailPage({
   buildingName,
   clientId,
@@ -43,13 +42,31 @@ export function PropertyDetailPage({
   onNavigateToEnergyProcurement,
   onNavigateToEquipmentSchedules,
 }: PropertyDetailPageProps) {
-  const [activeView, setActiveView] =
-    useState<ViewType>("sub-metering");
+  const [activeView, setActiveView] = useState<ViewType | null>(null);
 
-  // Reset to initial state whenever buildingName changes
-  useEffect(() => {
-    setActiveView("sub-metering");
-  }, [buildingName]);
+  const subMetering =
+    subMeteringData[buildingName as keyof typeof subMeteringData];
+  const activeProjects =
+    activeProjectsData[buildingName as keyof typeof activeProjectsData];
+  const dobCompliance =
+    dobComplianceData[buildingName as keyof typeof dobComplianceData] || [];
+  const energyProcurement =
+    energyProcurementData[
+      buildingName as keyof typeof energyProcurementData
+    ];
+  const equipmentSchedules =
+    equipmentSchedulesData[
+      buildingName as keyof typeof equipmentSchedulesData
+    ] || [];
+
+  // Calculate days left for energy procurement
+  let daysLeft = 0;
+  if (energyProcurement) {
+    const today = new Date();
+    const endDate = new Date(energyProcurement.endDate);
+    const timeDiff = endDate.getTime() - today.getTime();
+    daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -57,115 +74,31 @@ export function PropertyDetailPage({
         return "bg-green-100 text-green-800";
       case "In Progress":
         return "bg-blue-100 text-blue-800";
-      case "Not Started":
-        return "bg-orange-100 text-orange-800";
       case "Planning":
-        return "bg-purple-100 text-purple-800";
-      case "Yes":
-        return "bg-red-100 text-red-800";
-      case "No":
-        return "bg-green-100 text-green-800";
+        return "bg-yellow-100 text-yellow-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
-  const subMetering =
-    subMeteringData[
-      buildingName as keyof typeof subMeteringData
-    ];
-  const activeProjects =
-    activeProjectsData[
-      buildingName as keyof typeof activeProjectsData
-    ];
-  const dobCompliance =
-    dobComplianceData[
-      buildingName as keyof typeof dobComplianceData
-    ] || [];
-  const equipmentSchedules =
-    equipmentSchedulesData[
-      buildingName as keyof typeof equipmentSchedulesData
-    ] || [];
-  const building =
-    buildingData[buildingName as keyof typeof buildingData];
-
-  const energyProcurement =
-    energyProcurementData[
-      buildingName as keyof typeof energyProcurementData
-    ];
-
-  let daysLeft = 0;
-  let percentElapsed = 0;
-  let formattedEndDate = "";
-  let formattedStartDate = "";
-
-  if (energyProcurement) {
-    const today = new Date();
-    const start = new Date(energyProcurement.startDate);
-    const end = new Date(energyProcurement.endDate);
-    const msInDay = 1000 * 60 * 60 * 24;
-
-    const totalDays = Math.max(
-      1,
-      Math.ceil((end.getTime() - start.getTime()) / msInDay),
-    );
-    const elapsedDays = Math.min(
-      totalDays,
-      Math.max(
-        0,
-        Math.ceil(
-          (today.getTime() - start.getTime()) / msInDay,
-        ),
-      ),
-    );
-
-    percentElapsed = (elapsedDays / totalDays) * 100;
-
-    daysLeft = Math.max(
-      0,
-      Math.ceil((end.getTime() - today.getTime()) / msInDay),
-    );
-
-    formattedStartDate = start.toLocaleDateString(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-
-    formattedEndDate = end.toLocaleDateString(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  }
-
-  const countdownBg =
-    daysLeft <= 30
-      ? "bg-red-600"
-      : daysLeft <= 60
-        ? "bg-amber-500"
-        : "bg-slate-900";
-
   return (
     <div className="h-full flex flex-col">
       <div className="bg-white border-b border-gray-200 px-8 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onBack}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <h1 className="text-gray-900">{buildingName}</h1>
-          </div>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          <h1 className="text-gray-900">{buildingName}</h1>
         </div>
 
         {/* Card-based navigation */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
           {/* Sub-Metering Card */}
           <Card
             className={`overflow-hidden cursor-pointer transition-all hover:shadow-lg ${
@@ -179,7 +112,7 @@ export function PropertyDetailPage({
             }}
           >
             <div className="aspect-video w-full overflow-hidden">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1662601619308-3cd3038944b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVjdHJpYyUyMG1ldGVyJTIwbW9uaXRvcmluZ3xlbnwxfHx8fDE3NjQxNzEwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Sub-Metering"
                 className="w-full h-full object-cover"
@@ -193,7 +126,7 @@ export function PropertyDetailPage({
                     {subMetering.status}
                   </Badge>
                   <p className="text-xs text-gray-600">
-                    Meter Online: {subMetering.metersInstalled}/{subMetering.totalMeters} 
+                    Meter Online: {subMetering.metersInstalled}/{subMetering.totalMeters}
                   </p>
                 </>
               )}
@@ -216,7 +149,7 @@ export function PropertyDetailPage({
             }}
           >
             <div className="aspect-video w-full overflow-hidden">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1632862378913-b4fe820ce73b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjB3b3JrZXJzJTIwYnVpbGRpbmclMjBzaXRlfGVufDF8fHx8MTc2NDE3ODk5NXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Active Projects"
                 className="w-full h-full object-cover"
@@ -263,7 +196,7 @@ export function PropertyDetailPage({
             }}
           >
             <div className="aspect-video w-full overflow-hidden">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1583521214690-73421a1829a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidWlsZGluZyUyMGNvbXBsaWFuY2UlMjBkb2N1bWVudHN8ZW58MXx8fHwxNzY0MTcxNzIxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="DOB Compliance"
                 className="w-full h-full object-cover"
@@ -300,7 +233,7 @@ export function PropertyDetailPage({
             }}
           >
             <div className="aspect-video w-full overflow-hidden">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1523820818278-f1a7f789dbbf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxOWUMlMjBidWlsZGluZ3MlMjBuaWdodCUyMGxpZ2h0c3xlbnwxfHx8fDE3NjQxNzkyMDB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Energy Procurement"
                 className="w-full h-full object-cover"
@@ -340,7 +273,7 @@ export function PropertyDetailPage({
             }}
           >
             <div className="aspect-video w-full overflow-hidden">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1730824332118-80349f90300e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmR1c3RyaWFsJTIwY2hpbGxlciUyMHB1bXBzJTIwYmx1ZXxlbnwxfHx8fDE3NjQxNzgxNTl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Equipment Schedules"
                 className="w-full h-full object-cover"
@@ -359,7 +292,7 @@ export function PropertyDetailPage({
           </Card>
         </div>
       </div>
-      
+
       {/* Content area - now empty as cards navigate to separate pages */}
     </div>
   );

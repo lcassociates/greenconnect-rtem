@@ -209,13 +209,21 @@ export interface EnergyProcurementInfo {
 }
 
 export const energyProcurementData: Record<string, EnergyProcurementInfo> = {
-  "100 Broadway": {
+   "100 Broadway": {
     provider: "Con Edison",
     contractType: "Fixed Rate",
     startDate: "2024-01-01",
     endDate: "2026-12-31",
     rate: "$0.145/kWh",
     annualUsage: "750,000 kWh",
+  },
+  "1180 Ave of Americas": {
+    provider: "Direct Energy",
+    contractType: "Fixed Rate",
+    startDate: "2023-06-01",
+    endDate: "2025-05-31",
+    rate: "$0.152/kWh",
+    annualUsage: "920,000 kWh",
   },
 };
 
