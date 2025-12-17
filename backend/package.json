@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "ingest": "node src/jobs/ingestDeviceLogs.js"
+    "sync": "node src/jobs/syncAndLog.js",
+    "smoke" : "node src/jobs/smokeTestTokenAndDevices.js"
   },
   "dependencies": {
     "axios": "^1.7.7",
