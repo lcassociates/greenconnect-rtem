@@ -61,33 +61,54 @@ export async function replaceDevices(client, devices) {
 }
 
 /**
+ * Insert device log raw data (time-series data)
+ * Save body response raw_txt (.txt) 
+ */
+
+
+
+export async function upsertDeviceLogRaw(client, { device_id, account_id, header_line, raw_text }) {
+  await client.query(
+    `
+    INSERT INTO public.cbw_device_logs_raw (device_id, account_id, header_line, raw_text)
+    VALUES ($1, $2, $3, $4)
+    ON CONFLICT (device_id) DO UPDATE SET
+      account_id  = EXCLUDED.account_id,
+      header_line = EXCLUDED.header_line,
+      raw_text    = EXCLUDED.raw_text
+    `,
+    [device_id, account_id, header_line, raw_text]
+  );
+}
+
+/**
  * Insert parsed device log rows (time-series data)
  * Called AFTER parsing the .txt CSV
  */
-export async function insertDeviceLogs(client, deviceId, accountId, rows) {
-  if (!rows || rows.length === 0) return;
+// export async function insertDeviceLogs(client, deviceId, accountId, rows) {
+//   if (!rows || rows.length === 0) return;
 
-  const sql = `
-    INSERT INTO public.cbw_device_log
-      (device_id, account_id, datetime_utc, log_date, log_time,
-       vin_v, set_temp_f, kw, kwh_import, frequency_hz)
-    VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
-    ON CONFLICT DO NOTHING
-  `;
+//   const sql = `
+//     INSERT INTO public.cbw_device_log
+//       (device_id, account_id, datetime_utc, log_date, log_time,
+//        vin_v, set_temp_f, kw, kwh_import, frequency_hz)
+//     VALUES
+//       ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+//     ON CONFLICT DO NOTHING
+//   `;
 
-  for (const r of rows) {
-    await client.query(sql, [
-      deviceId,
-      accountId,
-      r.datetime_utc,
-      r.log_date,
-      r.log_time,
-      r.vin_v,
-      r.set_temp_f,
-      r.kw,
-      r.kwh_import,
-      r.frequency_hz,
-    ]);
-  }
-}
+//   for (const r of rows) {
+//     await client.query(sql, [
+//       deviceId,
+//       accountId,
+//       r.datetime_utc,
+//       r.log_date,
+//       r.log_time,
+//       r.vin_v,
+//       r.set_temp_f,
+//       r.kw,
+//       r.kwh_import,
+//       r.frequency_hz,
+//     ]);
+//   }
+// }
